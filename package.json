@@ -1,6 +1,6 @@
 {
   "name": "netplex",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "private": true,
   "type": "module",
   "description": "A customizable Windows desktop client for Plex with native video playback.",

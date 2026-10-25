@@ -196,66 +196,36 @@ try {
   await page.getByRole('button', { name: 'Gem som tema', exact: true }).click();
   await page.getByRole('button', { name: 'Brug temaet Mit Windows-tema', exact: true }).waitFor();
   await page.getByRole('button', { name: 'Layout', exact: true }).click();
+  await page.getByRole('button', { name: '+ Kategori', exact: true }).click();
   await page
-    .getByRole('combobox', { name: 'Tilføj færdig kategori', exact: true })
+    .getByRole('combobox', { name: 'Brug færdig kategori', exact: true })
     .selectOption('classics');
   assert.equal(
     await page.getByRole('textbox', { name: 'Kategoriens navn', exact: true }).inputValue(),
     'Film før 1990',
   );
-  await page.getByRole('button', { name: '+ Sektion', exact: true }).click();
-  await page
-    .getByRole('combobox', { name: 'Sektionens opbygning', exact: true })
-    .selectOption('columns');
-  await page
-    .getByRole('combobox', { name: 'Kolonnernes fordeling', exact: true })
-    .selectOption('wide-left');
-  await page
-    .getByRole('combobox', { name: 'Sektionens indramning', exact: true })
-    .selectOption('panel');
-  await page
-    .getByRole('combobox', { name: 'Tilføj færdig kategori', exact: true })
-    .selectOption('rated');
-  await page
-    .locator('[data-tree-id]')
-    .filter({ has: page.locator('.studio-tree-label', { hasText: 'Side om side' }) })
-    .last()
-    .locator('.studio-tree-label')
-    .click();
-  await page
-    .getByRole('combobox', { name: 'Tilføj færdig kategori', exact: true })
-    .selectOption('short');
+  assert.equal(await page.getByRole('button', { name: '+ Sektion', exact: true }).count(), 0);
+  assert.equal(
+    await page.getByRole('combobox', { name: 'Tilføj færdig kategori', exact: true }).count(),
+    0,
+  );
+  for (const preset of ['rated', 'short']) {
+    await page.getByRole('button', { name: '+ Kategori', exact: true }).click();
+    await page
+      .getByRole('combobox', { name: 'Brug færdig kategori', exact: true })
+      .selectOption(preset);
+  }
   await page.getByRole('button', { name: 'JSON', exact: true }).click();
   await page.getByRole('combobox', { name: 'JSON-indhold', exact: true }).selectOption('all');
   const result = JSON.parse(
     await page.getByRole('textbox', { name: 'Design JSON', exact: true }).inputValue(),
   );
   assert.ok(result.pages.home.children.some((n) => n.id === 'my-special'));
-  const section = result.pages.home.children.find(
-    (n) => n.type === 'container' && n.ratio === 'wide-left',
-  );
-  assert.equal(section.children.length, 2);
-  assert.equal(section.surface, 'panel');
-  const classic = result.pages.home.children.find((n) => n.title === 'Film før 1990');
-  assert.equal(classic.query.filter.year.lt, 1990);
-  const tracks = await page
-    .locator(`[data-module="${section.id}"]`)
-    .evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').map(parseFloat));
-  assert.ok(
-    Math.abs(tracks[0] / tracks[1] - 2) < 0.02,
-    'Side-by-side columns must use the selected 2:1 ratio',
+  assert.equal(
+    result.pages.home.children.find((n) => n.title === 'Film før 1990').query.filter.year.lt,
+    1990,
   );
   await page.getByRole('button', { name: 'Layout', exact: true }).click();
-  await page.locator(`[data-tree-id="${section.id}"] .studio-tree-label`).click();
-  await page
-    .getByRole('combobox', { name: 'Sektionens opbygning', exact: true })
-    .selectOption('masonry');
-  assert.equal(
-    await page
-      .locator(`[data-module="${section.id}"]`)
-      .evaluate((el) => getComputedStyle(el).columnCount),
-    '2',
-  );
   assert.equal(
     await page
       .getByRole('combobox', { name: 'Bibliotekets visning', exact: true })
@@ -266,7 +236,9 @@ try {
   await page
     .getByRole('combobox', { name: 'Bibliotekets visning', exact: true })
     .selectOption('grid');
-  const homeSize = await page.locator('[data-module=recent] .np-carousel').getAttribute('data-card-size');
+  const homeSize = await page
+    .locator('[data-module=recent] .np-carousel')
+    .getAttribute('data-card-size');
   const homeRadius = await page
     .locator('[data-module=recent] .np-card-root')
     .first()
@@ -279,8 +251,14 @@ try {
     const libraryCard = page.locator('.library-main .np-layout-grid .film-card').first();
     await libraryCard.waitFor();
     const image = await libraryCard.locator('.np-card-image').boundingBox();
-    assert.ok(Math.abs(image.width / image.height - 16 / 9) < .01, name + ' must share the landscape format');
-    assert.equal(await page.locator('.library-main .np-layout-grid').getAttribute('data-card-size'), homeSize);
+    assert.ok(
+      Math.abs(image.width / image.height - 16 / 9) < 0.01,
+      name + ' must share the landscape format',
+    );
+    assert.equal(
+      await page.locator('.library-main .np-layout-grid').getAttribute('data-card-size'),
+      homeSize,
+    );
     assert.equal(
       await libraryCard
         .locator('.np-card-root')
@@ -308,10 +286,13 @@ try {
     await poster.waitFor();
     const geometry = await poster.boundingBox();
     assert.ok(
-      Math.abs(geometry.width / geometry.height - 2 / 3) < .01,
+      Math.abs(geometry.width / geometry.height - 2 / 3) < 0.01,
       name + ' must share the poster format',
     );
-    assert.equal(await poster.locator('xpath=ancestor::*[@data-card-size]').getAttribute('data-card-size'),'240');
+    assert.equal(
+      await poster.locator('xpath=ancestor::*[@data-card-size]').getAttribute('data-card-size'),
+      '240',
+    );
     assert.equal(
       await poster.locator('..').evaluate((el) => getComputedStyle(el).borderRadius),
       '14px',
@@ -329,7 +310,7 @@ try {
     .waitFor({ state: 'detached' });
   assert.deepEqual(errors, []);
   console.log(
-    'PASS: Windows in-poster metadata, unclipped progress, cast disclosure, poster hit area, identical home/movie/show/saved cards, centered SVG arrows, theme gallery, separate JSON scopes, personal themes, category presets and asymmetric sections.',
+    'PASS: Windows in-poster metadata, unclipped progress, cast disclosure, poster hit area, identical home/movie/show/saved cards, centered SVG arrows, theme gallery, separate JSON scopes, personal themes, category presets and a flat home layout.',
   );
 } finally {
   await app?.close();

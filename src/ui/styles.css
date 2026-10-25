@@ -560,6 +560,8 @@ body.design-editing #app {
 }
 .studio-tree-tools {
   display: flex;
+  align-items: center;
+  gap: 2px;
   flex-shrink: 0;
   padding-right: 5px;
 }
@@ -568,6 +570,30 @@ body.design-editing #app {
   color: #96909f;
   width: 22px;
   height: 26px;
+}
+.studio-tree-tools .studio-tree-delete {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: #d0c6d7;
+  transition:
+    color 0.15s,
+    background 0.15s,
+    border-color 0.15s;
+}
+.studio-tree-delete svg {
+  display: block;
+  pointer-events: none;
+}
+.studio-tree-tools .studio-tree-delete:hover,
+.studio-tree-tools .studio-tree-delete:focus-visible {
+  color: #ffb8c3;
+  background: #f8718d18;
+  border-color: #f8718d40;
 }
 .studio-add,
 .studio-shapes {

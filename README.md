@@ -33,7 +33,7 @@ While this repository is private, downloads require GitHub access to the reposit
 
 - **One library, multiple servers.** Include or exclude servers in Settings. Copies with matching global Plex, IMDb, TMDB or TVDB identifiers appear as one title. Details show its available servers and let you choose the playback source.
 - **Native playback.** The bundled mpv player handles original MKV/HEVC media, audio tracks, and embedded or external subtitles locally. Compatible files can play without asking Plex to convert the video or burn in subtitles.
-- **A home screen you control.** Reorder modules, add categories, combine genre, year, rating, actor and director filters, or arrange sections in rows, grids and columns. Metadata pickers contain names from your own library.
+- **A home screen you control.** Reorder modules, add categories, combine genre, year, rating, actor and director filters, and choose a carousel, grid or vertical poster column for each category. Select a module to reveal its trash icon. Metadata pickers contain names from your own library.
 - **Consistent film cards.** Choose posters or landscape artwork, seven size steps, and rounded corners. Title, year and rating stay inside the artwork. Hover or keyboard focus reveals the save icon; click the card for details.
 - **Search and browse.** Type directly in the top search field, or press **Ctrl+K**. Search across films and series, or use the separate searches and filters inside Film and Serier.
 - **Continue watching and your own list.** Resume playback, save titles, and mark them watched. Playback progress syncs to the selected Plex source. Saved lists belong to the current NetPlex installation and Plex account.
@@ -52,7 +52,7 @@ Keep your categories while changing how NetPlex looks.
 
 | Tab | What you can change |
 | --- | --- |
-| **Layout** | Home modules, order, category rules, library views and section arrangements. |
+| **Layout** | Home modules, order, category rules and library views. Category templates appear inside the selected category's settings. |
 | **Temaer** | Four included themes and your own locally saved themes. |
 | **Tilpas** | Colors, font and top or side navigation. |
 | **Filmkort** | The shared card format, size and corner rounding. |
@@ -96,7 +96,7 @@ npm run build:windows
 Outputs:
 
 - `Windows/NetPlex-win32-x64/NetPlex.exe` — keep its whole folder together.
-- `Windows/Installers/NetPlex-Setup-1.4.1.exe` — the single file to distribute.
+- `Windows/Installers/NetPlex-Setup-<version>.exe` — the single file to distribute.
 - `Windows/Installers/SHA256.txt` — installer checksum.
 
 Run checks:

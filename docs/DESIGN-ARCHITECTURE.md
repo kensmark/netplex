@@ -1,5 +1,11 @@
 # NetPlex Design 2
 
+## Udgave 1.4.2: enklere modulstyring
+
+Det valgte modul har et skraldespandsikon direkte i modulrækken. Forsidens rod kan ikke slettes. Sletning opdaterer forhåndsvisningen og kan fortrydes/gentages; Gem design og Annullér styrer fortsat, om ændringen bevares. Den tidligere Fjern modulet-knap langt nede i egenskaberne er fjernet.
+
+Den globale Tilføj færdig kategori-vælger er fjernet. Tilføj en kategori med + Kategori, og anvend Brug færdig kategori inde i kategoriens justeringer. Sektioner/Side om side er taget ud af Studio. Klientens normalisering flader ældre indlejrede sektioner ud til almindelige moduler i samme rækkefølge uden at miste kategorier, id'er eller filtre. Den gemte fil overskrives først ved Gem design. Det eksisterende filformat accepteres fortsat af hensyn til gamle designfiler.
+
 ## Udgave 1.4: katalog fra flere servere
 
 `server/catalog.js` ejer serveropdagelse, fravalg, pagineret indlæsning, kildeidentitet, samling af dubletter og kompatibilitet med tidligere lister. Indstillingerne udvides bagudkompatibelt med servers, serverSelections og catalogBookmarks. Tokens og serveradresser opbevares lokalt, adskilt fra designfiler. Kontoens fravalg overlever ny login; en manuel forbindelse opgraderes fra connection.

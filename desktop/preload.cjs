@@ -1,6 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('netplexDesktop', Object.freeze({
-  version: '1.4.1',
+  version: '1.4.2',
   play: options => ipcRenderer.invoke('netplex:play', options),
   command: (name, value) => ipcRenderer.invoke('netplex:command', name, value),
   stop: () => ipcRenderer.invoke('netplex:stop'),

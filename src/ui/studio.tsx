@@ -7,8 +7,7 @@ import { MetadataPicker } from './metadata-picker';
 import { CardsPanel, ThemePanel } from './studio-panels';
 import { ThemeGallery } from './theme-gallery';
 import { StudioJSON } from './studio-json';
-import { SectionPanel } from './section-panel';
-import { categoryPresets, type CategoryPreset } from './category-presets';
+import { categoryPresets } from './category-presets';
 
 function YearInput({
   value,
@@ -95,10 +94,9 @@ export function Studio({
       if (value === undefined) delete (n.query.filter as Record<string, unknown>)[key];
     });
   const categories = categoryPresets(catalog);
-  const add = (type: 'collection' | 'text' | 'container' | 'spacer', preset?: CategoryPreset) =>
+  const add = (type: 'collection' | 'text' | 'spacer') =>
     edit((draft) => {
-      const selectedNode = findModule(draft.pages.home, node.id),
-        parent = selectedNode?.type === 'container' ? selectedNode : draft.pages.home;
+      const parent = draft.pages.home;
       if (parent.type !== 'container')
         throw new Error('Forsidens rod skal være en container for at tilføje moduler.');
       const id = `module-${crypto.randomUUID().slice(0, 8)}`;
@@ -107,26 +105,23 @@ export function Studio({
           ? {
               id,
               type,
-              title: preset?.title || 'Min kategori',
-              query: preset
-                ? structuredClone(preset.query)
-                : { source: 'library', filter: { types: ['movie'] }, sort: 'added', limit: 12 },
+              title: 'Min kategori',
+              query: { source: 'library', filter: { types: ['movie'] }, sort: 'added', limit: 12 },
               layout: 'row',
               empty: 'message',
             }
           : type === 'text'
             ? { id, type, text: 'Din overskrift', appearance: 'heading' }
-            : type === 'spacer'
-              ? { id, type, height: 32 }
-              : { id, type, layout: 'columns', columns: 2, gap: 24, children: [] };
+            : { id, type, height: 32 };
       parent.children.push(child);
       setSelected(id);
     });
-  const remove = () =>
+  const remove = (id: string) =>
     edit((draft) => {
+      if (id === draft.pages.home.id) return;
       const visit = (n: LayoutNode) => {
         if (n.type === 'container') {
-          n.children = n.children.filter((child) => child.id !== node.id);
+          n.children = n.children.filter((child) => child.id !== id);
           n.children.forEach(visit);
         }
       };
@@ -180,27 +175,9 @@ export function Studio({
         {tab === 'layout' && (
           <>
             <p className="studio-hint">
-              Layout styrer dine lister, filmregler og sektioner. Skift udseende separat under
+              Layout styrer dine lister, filmregler og rækkefølge. Skift udseende separat under
               Temaer.
             </p>
-            <label className="studio-field">
-              Tilføj færdig kategori
-              <select
-                aria-label="Tilføj færdig kategori"
-                value=""
-                onChange={(event) => {
-                  const preset = categories.find((p) => p.id === event.target.value);
-                  if (preset) add('collection', preset);
-                }}
-              >
-                <option value="">Vælg en kategori…</option>
-                {categories.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.title}
-                  </option>
-                ))}
-              </select>
-            </label>
             <label className="studio-field">
               Bibliotekets visning
               <select
@@ -224,10 +201,10 @@ export function Studio({
                 edit((draft) => moveModule(draft, source, target, edge))
               }
               onAdd={add}
+              onRemove={remove}
             />
-            <section className="studio-properties">
+            <section className="studio-properties" hidden={node.id === design.pages.home.id}>
               <h3>{moduleLabel(node)}</h3>
-              {node.type === 'container' && <SectionPanel node={node} onEdit={nodeEdit} />}
               {node.type === 'text' && (
                 <>
                   <label className="studio-field">
@@ -488,11 +465,6 @@ export function Studio({
                     />
                   </label>
                 </>
-              )}
-              {node.id !== design.pages.home.id && (
-                <button className="studio-danger" onClick={remove}>
-                  Fjern modulet
-                </button>
               )}
             </section>
           </>

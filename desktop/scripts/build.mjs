@@ -14,6 +14,7 @@ await mkdir(join(desktop, '.cache'), { recursive: true });
 const stage = await mkdtemp(join(desktop, '.cache/app-'));
 for (const folder of ['public', 'server']) await cp(join(root, folder), join(stage, folder), { recursive: true });
 await cp(join(root, 'ASSETS.md'), join(stage, 'ASSETS.md'));
+await cp(join(root, 'LICENSE'), join(stage, 'LICENSE'));
 await mkdir(join(stage, 'desktop/assets'), { recursive: true });
 for (const name of ['main.js', 'preload.cjs', 'local-client.js', 'controller.js', 'mpv.js', 'native-video.js', 'THIRD-PARTY.md']) await cp(join(desktop, name), join(stage, 'desktop', name));
 await cp(join(desktop, 'node_modules/koffi'), join(stage, 'node_modules/koffi'), { recursive: true });
