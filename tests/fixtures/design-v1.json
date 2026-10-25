@@ -1,0 +1,305 @@
+{
+  "format": "netplex.design",
+  "formatVersion": 1,
+  "name": "Premiere",
+  "description": "Filmisk forside med brede billedrækker og lavendelaccent.",
+  "theme": {
+    "background": "#0d0d11",
+    "surface": "#19181f",
+    "text": "#f0edf6",
+    "muted": "#aaa6b5",
+    "accent": "#c9bcff",
+    "font": "unbounded",
+    "radius": 4,
+    "spacing": 24,
+    "contentWidth": 1800
+  },
+  "navigation": {
+    "position": "top",
+    "items": [
+      {
+        "route": "home",
+        "label": "Opdag"
+      },
+      {
+        "route": "movies",
+        "label": "Film"
+      },
+      {
+        "route": "shows",
+        "label": "Serier"
+      },
+      {
+        "route": "saved",
+        "label": "Min liste"
+      }
+    ]
+  },
+  "cards": {
+    "default": {
+      "width": 175,
+      "template": {
+        "type": "container",
+        "direction": "column",
+        "gap": 0,
+        "children": [
+          {
+            "type": "image",
+            "field": "poster",
+            "ratio": "poster",
+            "action": "details"
+          },
+          {
+            "type": "container",
+            "direction": "column",
+            "padding": 12,
+            "gap": 7,
+            "children": [
+              {
+                "type": "field",
+                "field": "title",
+                "size": 14,
+                "weight": "bold",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "year",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "container",
+                "direction": "row",
+                "gap": 8,
+                "children": [
+                  {
+                    "type": "action",
+                    "action": "play",
+                    "label": "Afspil",
+                    "appearance": "primary"
+                  },
+                  {
+                    "type": "action",
+                    "action": "save",
+                    "label": "Min liste"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "library": {
+      "width": 170,
+      "template": {
+        "type": "container",
+        "direction": "column",
+        "gap": 0,
+        "children": [
+          {
+            "type": "image",
+            "field": "poster",
+            "ratio": "poster",
+            "action": "details"
+          },
+          {
+            "type": "container",
+            "direction": "column",
+            "padding": 12,
+            "gap": 7,
+            "children": [
+              {
+                "type": "field",
+                "field": "title",
+                "size": 14,
+                "weight": "bold",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "year",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "rating",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "container",
+                "direction": "row",
+                "gap": 8,
+                "children": [
+                  {
+                    "type": "action",
+                    "action": "play",
+                    "label": "Afspil",
+                    "appearance": "primary"
+                  },
+                  {
+                    "type": "action",
+                    "action": "save",
+                    "label": "Min liste"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "continuing": {
+      "width": 350,
+      "template": {
+        "type": "container",
+        "direction": "column",
+        "gap": 0,
+        "children": [
+          {
+            "type": "image",
+            "field": "backdrop",
+            "ratio": "landscape",
+            "action": "play"
+          },
+          {
+            "type": "progress"
+          },
+          {
+            "type": "container",
+            "direction": "column",
+            "padding": 12,
+            "gap": 7,
+            "children": [
+              {
+                "type": "field",
+                "field": "title",
+                "size": 14,
+                "weight": "bold",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "remaining",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "summary",
+                "size": 11,
+                "weight": "normal",
+                "lines": 2
+              },
+              {
+                "type": "container",
+                "direction": "row",
+                "gap": 8,
+                "children": [
+                  {
+                    "type": "action",
+                    "action": "play",
+                    "label": "Afspil",
+                    "appearance": "primary"
+                  },
+                  {
+                    "type": "action",
+                    "action": "save",
+                    "label": "Min liste"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "library": {
+    "layout": "grid"
+  },
+  "pages": {
+    "home": {
+      "id": "home",
+      "type": "container",
+      "layout": "stack",
+      "gap": 40,
+      "children": [
+        {
+          "id": "spotlight",
+          "type": "hero",
+          "variant": "cinematic",
+          "query": {
+            "source": "library",
+            "filter": {
+              "type": "movie"
+            },
+            "sort": "added",
+            "limit": 1
+          }
+        },
+        {
+          "id": "continue",
+          "type": "collection",
+          "title": "Fortsæt med at se",
+          "query": {
+            "source": "continuing",
+            "limit": 6
+          },
+          "layout": "row",
+          "empty": "hide"
+        },
+        {
+          "id": "recent",
+          "type": "collection",
+          "title": "Senest tilføjet",
+          "query": {
+            "source": "library",
+            "filter": {
+              "type": "movie"
+            },
+            "sort": "added",
+            "limit": 18
+          },
+          "layout": "row",
+          "empty": "hide"
+        },
+        {
+          "id": "series",
+          "type": "collection",
+          "title": "Serier til din næste aften",
+          "query": {
+            "source": "library",
+            "filter": {
+              "type": "show"
+            },
+            "sort": "added",
+            "limit": 18
+          },
+          "layout": "row",
+          "empty": "hide"
+        },
+        {
+          "id": "saved",
+          "type": "collection",
+          "title": "Gemt til senere",
+          "query": {
+            "source": "saved",
+            "filter": {},
+            "sort": "added",
+            "limit": 18
+          },
+          "layout": "row",
+          "empty": "hide"
+        }
+      ]
+    }
+  }
+}

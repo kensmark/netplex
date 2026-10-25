@@ -1,0 +1,276 @@
+{
+  "format": "netplex.design",
+  "formatVersion": 2,
+  "name": "Velvet",
+  "description": "En privat biograf med bordeaux, varm ferskenaccent, redaktionelle overskrifter og store plakater med titel, år og bedømmelse.",
+  "theme": {
+    "background": "#160f15",
+    "surface": "#281c25",
+    "text": "#f8eee6",
+    "muted": "#baa7b2",
+    "accent": "#f3b18e",
+    "font": "serif",
+    "spacing": 24
+  },
+  "navigation": {
+    "position": "left",
+    "items": [
+      {
+        "route": "home",
+        "label": "Forside"
+      },
+      {
+        "route": "movies",
+        "label": "Film"
+      },
+      {
+        "route": "shows",
+        "label": "Serier"
+      },
+      {
+        "route": "saved",
+        "label": "Din liste"
+      }
+    ]
+  },
+  "cards": {
+    "shared": {
+      "width": 214,
+      "template": {
+        "type": "container",
+        "direction": "column",
+        "gap": 0,
+        "children": [
+          {
+            "type": "image",
+            "field": "poster",
+            "ratio": "poster",
+            "action": "details"
+          },
+          {
+            "type": "container",
+            "direction": "column",
+            "padding": 16,
+            "gap": 7,
+            "children": [
+              {
+                "type": "field",
+                "field": "title",
+                "size": 16,
+                "weight": "bold",
+                "lines": 2
+              },
+              {
+                "type": "field",
+                "field": "year",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "rating",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "duration",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "genres",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "summary",
+                "size": 11,
+                "weight": "normal",
+                "lines": 3
+              },
+              {
+                "type": "container",
+                "direction": "row",
+                "gap": 8,
+                "children": [
+                  {
+                    "type": "action",
+                    "action": "play",
+                    "label": "Afspil",
+                    "appearance": "primary"
+                  },
+                  {
+                    "type": "action",
+                    "action": "save",
+                    "label": "Min liste"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "radius": 12,
+      "presentation": "overlay"
+    }
+  },
+  "library": {
+    "layout": "grid"
+  },
+  "pages": {
+    "home": {
+      "id": "home",
+      "type": "container",
+      "layout": "stack",
+      "gap": 36,
+      "children": [
+        {
+          "id": "spotlight",
+          "type": "hero",
+          "variant": "split",
+          "query": {
+            "source": "library",
+            "filter": {
+              "types": [
+                "movie"
+              ]
+            },
+            "sort": "rating",
+            "limit": 1
+          }
+        },
+        {
+          "id": "continue",
+          "type": "collection",
+          "title": "Aftenen fortsætter",
+          "query": {
+            "source": "continuing",
+            "limit": 12
+          },
+          "layout": "row",
+          "empty": "hide"
+        },
+        {
+          "id": "recent",
+          "type": "collection",
+          "title": "Nye i samlingen",
+          "query": {
+            "source": "library",
+            "filter": {
+              "types": [
+                "movie"
+              ]
+            },
+            "sort": "added",
+            "limit": 24
+          },
+          "layout": "row",
+          "empty": "hide"
+        },
+        {
+          "id": "evening-picks",
+          "type": "container",
+          "layout": "columns",
+          "columns": 2,
+          "gap": 32,
+          "children": [
+            {
+              "id": "saved",
+              "type": "collection",
+              "title": "Din liste",
+              "query": {
+                "source": "saved",
+                "sort": "added",
+                "limit": 18
+              },
+              "layout": "row",
+              "empty": "hide"
+            },
+            {
+              "id": "series",
+              "type": "collection",
+              "title": "Én episode mere",
+              "query": {
+                "source": "library",
+                "filter": {
+                  "types": [
+                    "show"
+                  ]
+                },
+                "sort": "added",
+                "limit": 18
+              },
+              "layout": "row",
+              "empty": "hide"
+            }
+          ]
+        },
+        {
+          "id": "garland",
+          "type": "collection",
+          "title": "Instruktørportræt · Alex Garland",
+          "query": {
+            "source": "library",
+            "filter": {
+              "types": [
+                "movie"
+              ],
+              "directors": [
+                "Alex Garland"
+              ]
+            },
+            "sort": "year",
+            "limit": 18
+          },
+          "layout": "row",
+          "empty": "hide"
+        },
+        {
+          "id": "classics",
+          "type": "collection",
+          "title": "Før 1990 · film der bliver",
+          "query": {
+            "source": "library",
+            "filter": {
+              "types": [
+                "movie"
+              ],
+              "year": {
+                "lt": 1990
+              }
+            },
+            "sort": "rating",
+            "limit": 24
+          },
+          "layout": "row",
+          "empty": "hide"
+        },
+        {
+          "id": "unwatched",
+          "type": "collection",
+          "title": "Din næste opdagelse",
+          "query": {
+            "source": "library",
+            "filter": {
+              "types": [
+                "movie"
+              ],
+              "unwatched": true
+            },
+            "sort": "rating",
+            "limit": 24
+          },
+          "layout": "row",
+          "empty": "hide"
+        }
+      ]
+    }
+  }
+}

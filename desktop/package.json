@@ -1,0 +1,24 @@
+{
+  "name": "netplex-desktop-tools",
+  "version": "1.4.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "electron main.js",
+    "setup:player": "node scripts/setup-player.mjs",
+    "build": "node scripts/build.mjs",
+    "build:installer": "node scripts/installer.mjs",
+    "dist": "npm run build && npm run build:installer",
+    "test": "node --test --test-concurrency=1 tests/*.test.js",
+    "test:studio": "node ../scripts/ui-check.mjs"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "7zip-bin": "5.2.0",
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0"
+  },
+  "dependencies": {
+    "koffi": "3.3.4"
+  }
+}

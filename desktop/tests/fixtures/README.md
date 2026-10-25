@@ -1,0 +1,1 @@
+Testfilmen er genereret lokalt med FFmpeg fra `testsrc2` og en 440 Hz sinustone. Den indeholder 12 sekunders HEVC Main 10-video, to EAC3-lydspor mærket engelsk/dansk og indlejrede danske SRT-undertekster. `dansk.srt` bruges også til at kontrollere eksterne Plex-undertekster. Ingen film eller lyd fra brugerens bibliotek er inkluderet.

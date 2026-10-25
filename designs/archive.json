@@ -1,0 +1,230 @@
+{
+  "format": "netplex.design",
+  "formatVersion": 2,
+  "name": "Archive",
+  "description": "Et varmt filmarkiv med serifskrift, kompakte lister og egne kategorier.",
+  "theme": {
+    "background": "#15120f",
+    "surface": "#231e19",
+    "text": "#f1e7d7",
+    "muted": "#b5a58e",
+    "accent": "#dfb778",
+    "font": "serif",
+    "spacing": 24
+  },
+  "navigation": {
+    "position": "top",
+    "items": [
+      {
+        "route": "home",
+        "label": "Forside"
+      },
+      {
+        "route": "movies",
+        "label": "Film"
+      },
+      {
+        "route": "shows",
+        "label": "Serier"
+      },
+      {
+        "route": "saved",
+        "label": "Din liste"
+      }
+    ]
+  },
+  "cards": {
+    "shared": {
+      "width": 160,
+      "template": {
+        "type": "container",
+        "direction": "column",
+        "gap": 0,
+        "children": [
+          {
+            "type": "image",
+            "field": "poster",
+            "ratio": "poster",
+            "action": "details"
+          },
+          {
+            "type": "container",
+            "direction": "column",
+            "padding": 12,
+            "gap": 7,
+            "children": [
+              {
+                "type": "field",
+                "field": "title",
+                "size": 14,
+                "weight": "bold",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "year",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "rating",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "duration",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "genres",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "summary",
+                "size": 11,
+                "weight": "normal",
+                "lines": 3
+              },
+              {
+                "type": "container",
+                "direction": "row",
+                "gap": 8,
+                "children": [
+                  {
+                    "type": "action",
+                    "action": "play",
+                    "label": "Afspil",
+                    "appearance": "primary"
+                  },
+                  {
+                    "type": "action",
+                    "action": "save",
+                    "label": "Min liste"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "radius": 8,
+      "presentation": "overlay"
+    }
+  },
+  "library": {
+    "layout": "grid"
+  },
+  "pages": {
+    "home": {
+      "id": "home",
+      "type": "container",
+      "layout": "stack",
+      "gap": 40,
+      "children": [
+        {
+          "id": "archive-intro",
+          "type": "text",
+          "appearance": "eyebrow",
+          "text": "NETPLEX / DET PERSONLIGE FILMARKIV"
+        },
+        {
+          "id": "archive-title",
+          "type": "text",
+          "appearance": "heading",
+          "text": "Historier, der bliver hos dig."
+        },
+        {
+          "id": "spotlight",
+          "type": "hero",
+          "variant": "compact",
+          "query": {
+            "source": "library",
+            "filter": {
+              "types": [
+                "movie"
+              ]
+            },
+            "sort": "rating",
+            "limit": 1
+          }
+        },
+        {
+          "id": "classics",
+          "type": "collection",
+          "title": "Film før 1990",
+          "query": {
+            "source": "library",
+            "filter": {
+              "year": {
+                "lt": 1990
+              },
+              "types": [
+                "movie"
+              ]
+            },
+            "sort": "oldest",
+            "limit": 12
+          },
+          "layout": "row",
+          "empty": "message"
+        },
+        {
+          "id": "archive-columns",
+          "type": "container",
+          "layout": "columns",
+          "columns": 2,
+          "gap": 32,
+          "children": [
+            {
+              "id": "drama",
+              "type": "collection",
+              "title": "Et godt drama",
+              "query": {
+                "source": "library",
+                "filter": {
+                  "types": [
+                    "movie"
+                  ],
+                  "genres": [
+                    "Drama"
+                  ]
+                },
+                "sort": "rating",
+                "limit": 5
+              },
+              "layout": "list",
+              "empty": "hide"
+            },
+            {
+              "id": "recent",
+              "type": "collection",
+              "title": "Tilføjet til arkivet",
+              "query": {
+                "source": "library",
+                "filter": {
+                  "types": [
+                    "movie"
+                  ]
+                },
+                "sort": "added",
+                "limit": 5
+              },
+              "layout": "list",
+              "empty": "hide"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

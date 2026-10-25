@@ -1,0 +1,42 @@
+{
+  "name": "netplex",
+  "version": "1.4.1",
+  "private": true,
+  "type": "module",
+  "description": "A customizable Windows desktop client for Plex with native video playback.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "start": "npm --prefix desktop start",
+    "dev": "npm --prefix desktop start",
+    "check": "npm run typecheck && node scripts/check.js",
+    "test": "node --test --test-concurrency=1 tests/*.test.js",
+    "build:ui": "node scripts/build-ui.mjs",
+    "typecheck": "tsc --noEmit",
+    "prestart": "npm run build:ui",
+    "predev": "npm run build:ui",
+    "pretest": "npm run build:ui",
+    "precheck": "npm run build:ui",
+    "test:ui": "node scripts/ui-check.mjs",
+    "pretest:ui": "npm run build:ui",
+    "setup:desktop": "npm --prefix desktop run setup:player",
+    "build:windows": "npm --prefix desktop run dist",
+    "test:desktop": "npm --prefix desktop test"
+  },
+  "dependencies": {
+    "@fontsource-variable/unbounded": "5.3.0",
+    "hls.js": "1.7.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "ajv": "8.20.0",
+    "esbuild": "0.28.2",
+    "playwright": "1.64.1",
+    "prettier": "3.9.10",
+    "typescript": "7.0.2"
+  }
+}

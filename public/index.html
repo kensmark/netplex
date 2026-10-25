@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0d11">
+  <meta name="description" content="NetPlex — din filmsamling i et smukt, personligt interface. Drevet af Plex Media Server.">
+  <title>NetPlex — Dit eget filmunivers</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/cinematic.css">
+  <link rel="stylesheet" href="/design/ui.css">
+  <link rel="stylesheet" href="/desktop-player.css">
+  <script src="/vendor/hls.min.js" defer></script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <div id="app"><div class="boot"><span class="brand">Net<span>Plex</span><b>.</b></span><span class="loader" aria-label="Indlæser NetPlex"></span></div></div>
+  <dialog id="detail-dialog" aria-label="Filmdetaljer"></dialog>
+  <dialog id="settings-dialog" aria-label="Indstillinger"></dialog>
+  <dialog id="player-dialog" aria-label="Videoafspiller"></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <noscript>NetPlex kræver JavaScript. Aktivér det i din browser, og genindlæs siden.</noscript>
+</body>
+</html>

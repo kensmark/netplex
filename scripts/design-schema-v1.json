@@ -1,0 +1,647 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NetPlex Design 1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "netplex.design"
+    },
+    "formatVersion": {
+      "const": 1
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 80,
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "background": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "surface": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "text": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "muted": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "accent": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "font": {
+          "type": "string",
+          "enum": [
+            "system",
+            "unbounded",
+            "serif"
+          ]
+        },
+        "radius": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 32
+        },
+        "spacing": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 48
+        },
+        "contentWidth": {
+          "type": "integer",
+          "minimum": 760,
+          "maximum": 2400
+        }
+      },
+      "required": [
+        "background",
+        "surface",
+        "text",
+        "muted",
+        "accent",
+        "font",
+        "radius",
+        "spacing",
+        "contentWidth"
+      ]
+    },
+    "navigation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "type": "string",
+          "enum": [
+            "top",
+            "left"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "route": {
+                "type": "string",
+                "enum": [
+                  "home",
+                  "movies",
+                  "shows",
+                  "saved",
+                  "search"
+                ]
+              },
+              "label": {
+                "type": "string",
+                "maxLength": 32,
+                "minLength": 1
+              }
+            },
+            "required": [
+              "route",
+              "label"
+            ]
+          },
+          "maxItems": 5,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "position",
+        "items"
+      ]
+    },
+    "cards": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/$defs/card"
+        },
+        "library": {
+          "$ref": "#/$defs/card"
+        },
+        "continuing": {
+          "$ref": "#/$defs/card"
+        }
+      },
+      "required": [
+        "default",
+        "library",
+        "continuing"
+      ]
+    },
+    "library": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "layout": {
+          "type": "string",
+          "enum": [
+            "grid",
+            "row",
+            "list"
+          ]
+        }
+      },
+      "required": [
+        "layout"
+      ]
+    },
+    "pages": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "home": {
+          "$ref": "#/$defs/node"
+        }
+      },
+      "required": [
+        "home"
+      ]
+    }
+  },
+  "required": [
+    "format",
+    "formatVersion",
+    "name",
+    "theme",
+    "navigation",
+    "cards",
+    "library",
+    "pages"
+  ],
+  "$defs": {
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": [
+            "library",
+            "continuing",
+            "saved"
+          ]
+        },
+        "filter": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "movie",
+                "show",
+                "episode"
+              ]
+            },
+            "genre": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "year": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "gte": {
+                  "type": "integer",
+                  "minimum": 1800,
+                  "maximum": 2200
+                },
+                "lt": {
+                  "type": "integer",
+                  "minimum": 1800,
+                  "maximum": 2200
+                }
+              },
+              "required": []
+            },
+            "ratingMin": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 10
+            },
+            "unwatched": {
+              "type": "boolean"
+            },
+            "resolution": {
+              "type": "string",
+              "enum": [
+                "4k",
+                "1080",
+                "720"
+              ]
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "durationMax": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            }
+          },
+          "required": []
+        },
+        "sort": {
+          "type": "string",
+          "enum": [
+            "added",
+            "title",
+            "year",
+            "oldest",
+            "rating",
+            "duration"
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        }
+      },
+      "required": [
+        "source"
+      ]
+    },
+    "element": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "container"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "row",
+                "column"
+              ]
+            },
+            "gap": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 48
+            },
+            "padding": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 48
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/element"
+              },
+              "maxItems": 16,
+              "minItems": 0
+            }
+          },
+          "required": [
+            "type",
+            "direction",
+            "children"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "image"
+            },
+            "field": {
+              "type": "string",
+              "enum": [
+                "poster",
+                "backdrop"
+              ]
+            },
+            "ratio": {
+              "type": "string",
+              "enum": [
+                "poster",
+                "landscape",
+                "square"
+              ]
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "details",
+                "play"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "field",
+            "ratio"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "field"
+            },
+            "field": {
+              "type": "string",
+              "enum": [
+                "title",
+                "year",
+                "duration",
+                "rating",
+                "genres",
+                "resolution",
+                "summary",
+                "remaining"
+              ]
+            },
+            "size": {
+              "type": "integer",
+              "minimum": 9,
+              "maximum": 40
+            },
+            "weight": {
+              "type": "string",
+              "enum": [
+                "normal",
+                "bold"
+              ]
+            },
+            "lines": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            }
+          },
+          "required": [
+            "type",
+            "field"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "action"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "play",
+                "details",
+                "save"
+              ]
+            },
+            "label": {
+              "type": "string",
+              "maxLength": 60
+            },
+            "appearance": {
+              "type": "string",
+              "enum": [
+                "primary",
+                "secondary"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "action"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "progress"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        }
+      ]
+    },
+    "card": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 520
+        },
+        "template": {
+          "$ref": "#/$defs/element"
+        }
+      },
+      "required": [
+        "width",
+        "template"
+      ]
+    },
+    "node": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,47}$"
+            },
+            "type": {
+              "const": "container"
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "stack",
+                "columns"
+              ]
+            },
+            "columns": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "gap": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 96
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/node"
+              },
+              "maxItems": 30,
+              "minItems": 0
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "layout",
+            "children"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,47}$"
+            },
+            "type": {
+              "const": "text"
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 1000
+            },
+            "appearance": {
+              "type": "string",
+              "enum": [
+                "eyebrow",
+                "heading",
+                "body"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "text",
+            "appearance"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,47}$"
+            },
+            "type": {
+              "const": "spacer"
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 240
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "height"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,47}$"
+            },
+            "type": {
+              "const": "hero"
+            },
+            "query": {
+              "$ref": "#/$defs/query"
+            },
+            "variant": {
+              "type": "string",
+              "enum": [
+                "cinematic",
+                "split",
+                "compact"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "query",
+            "variant"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,47}$"
+            },
+            "type": {
+              "const": "collection"
+            },
+            "title": {
+              "type": "string",
+              "maxLength": 120
+            },
+            "query": {
+              "$ref": "#/$defs/query"
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "row",
+                "grid",
+                "list"
+              ]
+            },
+            "card": {
+              "$ref": "#/$defs/card"
+            },
+            "empty": {
+              "type": "string",
+              "enum": [
+                "hide",
+                "message"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "title",
+            "query",
+            "layout",
+            "empty"
+          ]
+        }
+      ]
+    }
+  }
+}

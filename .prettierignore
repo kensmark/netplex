@@ -1,0 +1,7 @@
+src/design/validate.generated.js
+src/design/validate-v1.generated.js
+src/design/validate-packages.generated.js
+public/design/
+node_modules/
+desktop/node_modules/
+Windows/

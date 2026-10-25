@@ -1,0 +1,23 @@
+const base = { type: 'movie', originalTitle: '', contentRating: '12', watched: false, progress: 0, rating: 7.8, duration: 6800000, year: 2025, resolution: '1080', videoCodec: 'h264', audioCodec: 'aac', container: 'mp4', directors: ['Alex Morgan'], cast: [{ name: 'Sam Ellis', role: 'Hovedrolle' }, { name: 'Jamie Rivers', role: 'Medvirkende' }], parentTitle: '', grandparentTitle: '', season: 0, episode: 0, leafCount: 0, viewedLeafCount: 0 };
+export const demoItems = [
+  { id: '1001', title: 'The Last Light', artStyle: 'sand', tagline: 'Et signal fra det ukendte.', genres: ['Science fiction', 'Eventyr'], duration: 7080000, resolution: '4k', summary: 'Da et mystisk signal bryder stilheden, rejser en ensom opdagelsesrejsende ud over den kendte verdens sidste grænse. En fortælling om det, vi efterlader, og det, der venter på os.' },
+  { id: '1002', title: 'Orbital', artStyle: 'orbit', tagline: 'Vi var aldrig alene.', genres: ['Science fiction', 'Thriller'], duration: 6360000, progress: 4320000, resolution: '4k', summary: 'En besætning på en fjern rumstation opdager noget, der ændrer deres forståelse af hjem, tid og hinanden.' },
+  { id: '1003', title: 'Night Shift', artStyle: 'noir', genres: ['Thriller', 'Drama'], duration: 5820000, progress: 1920000, rating: 8.2, summary: 'En taxachaufførs sidste tur gennem byen bliver begyndelsen på en nat, hvor ingen er den, de udgiver sig for.' },
+  { id: '1004', title: 'Blue Hour', artStyle: 'blue', genres: ['Drama'], year: 2024, duration: 6120000, watched: true, summary: 'Efter mange år vender en fotograf tilbage til kystbyen, hvor en gammel sommer stadig kaster lange skygger.' },
+  { id: '1005', title: 'Wildfire', artStyle: 'fire', genres: ['Thriller', 'Drama'], year: 2023, duration: 6780000, rating: 8.1, resolution: '4k', summary: 'To søskende genforenes i deres barndomshjem, mens en skovbrand nærmer sig og gamle hemmeligheder kommer frem.' },
+  { id: '1006', title: 'Northbound', artStyle: 'snow', genres: ['Eventyr', 'Drama'], duration: 5640000, summary: 'En uventet rejse gennem vinterlandskabet fører to fremmede tættere på det liv, de havde glemt at drømme om.' },
+  { id: '1007', title: 'Paper Moon', artStyle: 'moon', genres: ['Drama'], year: 2024, duration: 5340000, rating: 7.4, summary: 'En drømmer, et lille observatorium og en usandsynlig sommer, hvor alt pludselig føles muligt.' },
+  { id: '1008', title: 'The Deep', artStyle: 'deep', genres: ['Thriller', 'Science fiction'], duration: 6660000, progress: 780000, summary: 'Langt under havets overflade opfanger et lille forskningshold et signal, som umuligt burde være der.' },
+  { id: '1009', title: 'After Hours', artStyle: 'noir', genres: ['Drama'], year: 2023, duration: 5880000, watched: true, summary: 'Tre liv krydser hinanden i en by, der først for alvor vågner, når resten af verden sover.' },
+  { id: '1010', title: 'Slow Days', artStyle: 'sand', genres: ['Drama'], year: 2024, duration: 5160000, summary: 'En lille café ved verdens ende bliver et uventet mødested for mennesker, der alle har brug for en ny begyndelse.' },
+  { id: '2001', title: 'Beyond the Pines', type: 'show', artStyle: 'fire', genres: ['Drama', 'Mysterie'], year: 2025, duration: 0, leafCount: 8, summary: 'I en lille by ved skovens kant vender en gammel sag tilbage og ryster alt, indbyggerne troede, de vidste.' },
+  { id: '2002', title: 'Low Orbit', type: 'show', artStyle: 'orbit', genres: ['Science fiction'], year: 2024, duration: 0, leafCount: 6, summary: 'En lille besætning. En stor afstand til Jorden. Seks fortællinger fra kanten af det velkendte.' },
+].map((item, i) => ({ ...base, ...item, addedAt: 1780000000 - i * 86400, thumb: null, art: null }));
+
+export const demoArt = (item, poster = false) => `<div class="scene ${item.artStyle || 'sand'}" aria-hidden="true"><span class="scene-orb"></span><span class="scene-land"></span><span class="scene-land second"></span><span class="scene-figure"></span>${poster ? `<span class="poster-kicker">A NETPLEX ORIGINAL DESIGN</span><span class="poster-title">${item.title}</span><span class="poster-credit">A FICTIONAL FILM · ${item.year}</span>` : ''}</div>`;
+
+export function demoChildren(item) {
+  if (item.type === 'show') return [{ ...base, ...item, id: `${item.id}0`, type: 'season', title: 'Sæson 1', grandparentTitle: item.title, episode: 1, leafCount: 6 }];
+  if (item.type === 'season') return Array.from({ length: 6 }, (_, i) => ({ ...base, ...item, id: `${item.id}${i + 1}`, type: 'episode', title: ['Et nyt kapitel', 'Signaler', 'Det ukendte', 'Langt hjemmefra', 'Vendepunktet', 'Efter stilheden'][i], parentTitle: 'Sæson 1', grandparentTitle: item.grandparentTitle, season: 1, episode: i + 1, duration: 2700000 }));
+  return [];
+}

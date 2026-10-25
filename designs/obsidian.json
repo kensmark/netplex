@@ -1,0 +1,224 @@
+{
+  "format": "netplex.design",
+  "formatVersion": 2,
+  "name": "Obsidian",
+  "description": "Sidemenu, store landskabsbilleder og en opdelt forside.",
+  "theme": {
+    "background": "#08090d",
+    "surface": "#14161d",
+    "text": "#f0edf6",
+    "muted": "#aaa6b5",
+    "accent": "#b39bff",
+    "font": "system",
+    "spacing": 24
+  },
+  "navigation": {
+    "position": "left",
+    "items": [
+      {
+        "route": "home",
+        "label": "Forside"
+      },
+      {
+        "route": "movies",
+        "label": "Film"
+      },
+      {
+        "route": "shows",
+        "label": "Serier"
+      },
+      {
+        "route": "saved",
+        "label": "Din liste"
+      }
+    ]
+  },
+  "cards": {
+    "shared": {
+      "width": 290,
+      "template": {
+        "type": "container",
+        "direction": "column",
+        "gap": 0,
+        "children": [
+          {
+            "type": "image",
+            "field": "backdrop",
+            "ratio": "landscape",
+            "action": "details"
+          },
+          {
+            "type": "container",
+            "direction": "column",
+            "padding": 12,
+            "gap": 7,
+            "children": [
+              {
+                "type": "field",
+                "field": "title",
+                "size": 14,
+                "weight": "bold",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "year",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "rating",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "duration",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "genres",
+                "size": 11,
+                "weight": "normal",
+                "lines": 1
+              },
+              {
+                "type": "field",
+                "field": "summary",
+                "size": 11,
+                "weight": "normal",
+                "lines": 3
+              },
+              {
+                "type": "container",
+                "direction": "row",
+                "gap": 8,
+                "children": [
+                  {
+                    "type": "action",
+                    "action": "play",
+                    "label": "Afspil",
+                    "appearance": "primary"
+                  },
+                  {
+                    "type": "action",
+                    "action": "save",
+                    "label": "Min liste"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "radius": 8,
+      "presentation": "overlay"
+    }
+  },
+  "library": {
+    "layout": "grid"
+  },
+  "pages": {
+    "home": {
+      "id": "home",
+      "type": "container",
+      "layout": "stack",
+      "gap": 40,
+      "children": [
+        {
+          "id": "spotlight",
+          "type": "hero",
+          "variant": "split",
+          "query": {
+            "source": "library",
+            "filter": {
+              "types": [
+                "movie"
+              ]
+            },
+            "sort": "rating",
+            "limit": 1
+          }
+        },
+        {
+          "id": "continue",
+          "type": "collection",
+          "title": "Fortsæt din aften",
+          "query": {
+            "source": "continuing",
+            "limit": 6
+          },
+          "layout": "row",
+          "empty": "hide"
+        },
+        {
+          "id": "two-columns",
+          "type": "container",
+          "layout": "columns",
+          "columns": 2,
+          "gap": 32,
+          "children": [
+            {
+              "id": "recent",
+              "type": "collection",
+              "title": "Nye i samlingen",
+              "query": {
+                "source": "library",
+                "filter": {
+                  "types": [
+                    "movie"
+                  ]
+                },
+                "sort": "added",
+                "limit": 6
+              },
+              "layout": "grid",
+              "empty": "hide"
+            },
+            {
+              "id": "rated",
+              "type": "collection",
+              "title": "Højt vurderet",
+              "query": {
+                "source": "library",
+                "filter": {
+                  "ratingMin": 7,
+                  "types": [
+                    "movie"
+                  ]
+                },
+                "sort": "rating",
+                "limit": 4
+              },
+              "layout": "list",
+              "empty": "hide"
+            }
+          ]
+        },
+        {
+          "id": "series",
+          "type": "collection",
+          "title": "En sæson mere",
+          "query": {
+            "source": "library",
+            "filter": {
+              "types": [
+                "show"
+              ]
+            },
+            "sort": "added",
+            "limit": 18
+          },
+          "layout": "row",
+          "empty": "hide"
+        }
+      ]
+    }
+  }
+}

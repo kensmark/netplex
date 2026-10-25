@@ -1,0 +1,7 @@
+1
+00:00:00,000 --> 00:00:05,000
+Danske undertekster i NetPlex
+
+2
+00:00:05,000 --> 00:00:12,000
+Afspilles lokalt uden videokonvertering.

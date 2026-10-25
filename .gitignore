@@ -1,0 +1,34 @@
+node_modules/
+.netplex/
+.env
+*.log
+test-results/
+desktop/vendor/
+desktop/.cache/
+desktop/.data/
+Windows/
+.DS_Store
+src/design/validate.generated.js
+src/design/validate-v1.generated.js
+src/design/validate-packages.generated.js
+
+# The desktop app uses src/, public/ and server/app.js internally.
+# Keep the separate browser launcher on this computer only.
+/Start NetPlex.cmd
+/server/index.js
+/public/design/
+/designs/velvet-preview.png
+
+# Local credentials, personal designs, signing keys and helper downloads.
+settings.json
+design.json
+design.backup.json
+design.tmp
+themes.json
+.env.*
+*.pem
+*.pfx
+*.p12
+.tools/
+.codex/
+.agents/

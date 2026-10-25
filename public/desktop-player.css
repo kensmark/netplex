@@ -1,0 +1,28 @@
+html.native-playing{overflow:hidden}
+#player-dialog.native-player{display:flex;flex-direction:column;width:100%;height:100dvh;max-height:100dvh;margin:0;overflow:hidden}
+.native-player .player-top{flex:0 0 auto;min-height:72px}
+.native-bottom-chrome{flex:0 0 auto}
+.native-player button svg{pointer-events:none}
+.native-player .native-screen{flex:1 1 auto;min-height:140px;height:auto;background:#000;isolation:isolate}
+.native-player .player-bottom{flex:0 0 auto;padding:12px 27px}
+.native-player .player-help{flex:0 0 auto;padding-bottom:12px}
+.native-controls{flex:0 0 auto;background:#0a0c10;padding:14px 27px 6px;border-bottom:1px solid var(--line)}
+.native-progress{display:flex;align-items:center;gap:14px;color:#b4b1c0;font-size:11px;font-variant-numeric:tabular-nums}
+.native-controls input[type=range]{accent-color:var(--accent);padding:0;height:4px;cursor:pointer;min-width:0;border:0}
+.native-progress input{flex:1}
+.native-buttons{display:flex;align-items:center;gap:12px;margin-top:10px}
+.native-buttons .icon-btn{color:#e6e3ed;font-size:25px}
+.native-buttons .native-play{background:var(--accent);color:#171126;width:40px;height:40px;font-size:16px}
+.native-buttons #native-volume{width:95px}
+.native-buttons #native-mute{min-width:40px;font-size:11px}
+.native-status{color:var(--muted);font-size:10px;margin-left:auto;letter-spacing:.3px}
+.native-fullscreen{font-size:28px;padding:0 0 0 12px;color:#e6e3ed}
+.native-player .player-settings{gap:18px}
+.native-player .player-settings label{font-size:10px}
+.native-player .player-settings select{max-width:260px}
+.native-player.native-fullscreen-mode .native-screen{position:absolute;inset:0;width:100%;height:100%;min-height:0}
+.native-fullscreen-mode .player-top{position:absolute;top:0;left:0;right:0;z-index:2;background:#080a0e}
+.native-fullscreen-mode .native-bottom-chrome{position:absolute;bottom:0;left:0;right:0;z-index:2;background:#080a0e}
+.native-fullscreen-mode.native-idle{cursor:none}
+.native-fullscreen-mode.native-idle .player-top,.native-fullscreen-mode.native-idle .native-bottom-chrome{visibility:hidden;pointer-events:none}
+@media(max-height:760px){.native-player .player-top{min-height:59px;padding-top:10px;padding-bottom:10px}.native-player .native-controls{padding-top:10px}.native-player .player-bottom{padding-top:8px;padding-bottom:8px}.native-player .player-help{padding-bottom:8px}}
