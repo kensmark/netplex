@@ -1,3 +1,4 @@
+import electronExecutable from 'electron';
 import { _electron } from '../../node_modules/playwright/index.mjs';
 import { readFile, writeFile, mkdtemp, mkdir } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
@@ -37,7 +38,7 @@ let app;
 const errors = [];
 try {
   app = await _electron.launch({
-    executablePath: join(root, 'desktop/node_modules/electron/dist/electron.exe'),
+    executablePath: electronExecutable,
     args: [join(root, 'desktop/main.js')],
     env: { ...process.env, NETPLEX_DATA_DIR: data, NETPLEX_NO_IMPORT: '1' },
     timeout: 30000,
@@ -141,6 +142,16 @@ try {
   await page.getByRole('button', { name: 'Medvirkende', exact: true }).click();
   await page.getByRole('button', { name: 'JSON', exact: true }).click();
   await page.getByRole('combobox', { name: 'JSON-indhold', exact: true }).selectOption('all');
+  await page.waitForFunction(() => {
+    try {
+      return (
+        JSON.parse(document.querySelector('[aria-label="Design JSON"]')?.value || '{}').format ===
+        'netplex.design'
+      );
+    } catch {
+      return false;
+    }
+  });
   const design = JSON.parse(
     await page.getByRole('textbox', { name: 'Design JSON', exact: true }).inputValue(),
   );
@@ -199,10 +210,12 @@ try {
         new DragEvent('dragstart', { bubbles: true, dataTransfer: globalThis.__dragData }),
       );
   });
+  await page.locator('[data-tree-id=recent].dragging').waitFor();
   await page.locator('[data-tree-id=continue]').dispatchEvent('dragover', {
     clientY: (await page.locator('[data-tree-id=continue]').boundingBox()).y + 2,
     dataTransfer: await page.evaluateHandle(() => globalThis.__dragData),
   });
+  await page.locator('[data-tree-id=continue].drop-before').waitFor();
   assert.ok(
     (await page.locator('[data-tree-id=continue]').getAttribute('class')).includes('drop-before'),
   );
@@ -212,6 +225,10 @@ try {
   await page.screenshot({ path: join(output, 'netplex-studio-drag-feedback.png') });
   await page.locator('[data-tree-id=continue]').dispatchEvent('drop', {
     dataTransfer: await page.evaluateHandle(() => globalThis.__dragData),
+  });
+  await page.waitForFunction(() => {
+    const ids = [...document.querySelectorAll('.studio-tree-row')].map(element => element.dataset.treeId);
+    return ids.indexOf('recent') < ids.indexOf('continue');
   });
   const order = await page
     .locator('.studio-tree-row')
@@ -226,7 +243,7 @@ try {
   assert.equal(saved.formatVersion, 2);
   assert.deepEqual(errors, []);
   console.log(
-    'PASS: Windows Studio simplification, library-only multi-select metadata, shared poster cards, hover details, circular carousels, drag feedback, stable live preview, full-width header and saving.',
+    'PASS: Desktop Studio simplification, library-only multi-select metadata, shared poster cards, hover details, circular carousels, drag feedback, stable live preview, full-width header and saving.',
   );
 } finally {
   await app?.close();

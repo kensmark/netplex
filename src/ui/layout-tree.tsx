@@ -10,11 +10,7 @@ export const moduleLabel = (node: LayoutNode) =>
         ? 'Fremhævet film'
         : node.type === 'spacer'
           ? 'Afstand'
-          : node.layout === 'columns'
-            ? 'Side om side'
-            : node.layout === 'masonry'
-              ? 'Lodrette kolonner'
-              : 'Sektion';
+          : 'Forside';
 export function findModule(node: LayoutNode, id: string): LayoutNode | null {
   return node.id === id
     ? node
@@ -56,12 +52,14 @@ export function LayoutTree({
   onSelect,
   onMove,
   onAdd,
+  onRemove,
 }: {
   design: Design;
   selected: string;
   onSelect: (id: string) => void;
   onMove: (source: string, target: string, edge: DropEdge) => void;
-  onAdd: (type: 'collection' | 'text' | 'container' | 'spacer') => void;
+  onAdd: (type: 'collection' | 'text' | 'spacer') => void;
+  onRemove: (id: string) => void;
 }) {
   const [drag, setDrag] = useState<string | null>(null),
     [drop, setDrop] = useState<{ id: string; edge: DropEdge } | null>(null);
@@ -143,6 +141,25 @@ export function LayoutTree({
                 {edge === 'before' ? '↑' : '↓'}
               </button>
             ))}
+            {selected === node.id && (
+              <button
+                type="button"
+                className="studio-tree-delete"
+                aria-label={`Slet modulet: ${moduleLabel(node)}`}
+                title="Slet modulet"
+                onClick={() => onRemove(node.id)}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6M14 10v6"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            )}
           </span>
         )}
       </div>
@@ -180,7 +197,6 @@ export function LayoutTree({
       <div className="studio-add">
         <button onClick={() => onAdd('collection')}>+ Kategori</button>
         <button onClick={() => onAdd('text')}>+ Tekst</button>
-        <button onClick={() => onAdd('container')}>+ Sektion</button>
         <button onClick={() => onAdd('spacer')}>+ Afstand</button>
       </div>
     </>

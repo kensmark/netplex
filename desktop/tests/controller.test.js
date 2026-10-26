@@ -96,3 +96,61 @@ test('the renderer cannot send arbitrary mpv commands or select nonexistent trac
   await controller.command('audio', 1);
   assert.deepEqual(commands, [['set_property', 'aid', 1]]);
 });
+
+test('closing a separate native player saves its last observed progress and stops the session', async () => {
+  const requests = [],
+    states = [],
+    player = new EventEmitter();
+  let closed = false;
+  player.externalWindow = true;
+  player.start = async () => player;
+  player.observe = async () => {};
+  player.focus = async () => {};
+  player.command = async (command, property) => {
+    if (closed) throw new Error('closed');
+    if (command === 'get_property' && property === 'track-list') return [];
+  };
+  player.close = async () => {
+    closed = true;
+  };
+  const controller = new DesktopPlayback({
+    client: {
+      origin: 'http://127.0.0.1:1234',
+      cookie: 'fixture-session',
+      request: async (path, body) => {
+        requests.push({ path, body });
+        return {
+          id: 'external-session',
+          duration: 12,
+          resume: 0,
+          source: '/stream',
+          nativeStreams: [],
+          media: [],
+        };
+      },
+    },
+    emit: (state) => states.push(state),
+    showVideo: () => {},
+    playerFactory: () => player,
+  });
+  try {
+    await controller.play({ id: '1' });
+    player.emit('file-loaded');
+    for (let i = 0; i < 50 && !controller.active.started; i++)
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    assert.equal(controller.active.started, true);
+    player.emit('property-change', { name: 'time-pos', data: 4.2 });
+    closed = true;
+    player.emit('exit', 0);
+    for (let i = 0; i < 50 && !states.some((state) => !state.active); i++)
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    assert.equal(controller.snapshot().active, false);
+    assert.ok(!states.some((state) => state.error));
+    assert.deepEqual(requests.at(-1), {
+      path: '/api/playback/external-session/stop',
+      body: { time: 4200 },
+    });
+  } finally {
+    await controller.stop();
+  }
+});

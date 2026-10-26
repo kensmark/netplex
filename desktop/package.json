@@ -1,6 +1,6 @@
 {
   "name": "netplex-desktop-tools",
-  "version": "1.4.1",
+  "version": "1.5.0-beta.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,11 @@
     "build:installer": "node scripts/installer.mjs",
     "dist": "npm run build && npm run build:installer",
     "test": "node --test --test-concurrency=1 tests/*.test.js",
-    "test:studio": "node ../scripts/ui-check.mjs"
+    "test:studio": "node ../scripts/ui-check.mjs",
+    "build:mac": "node scripts/build.mjs",
+    "build:dmg": "node scripts/installer-macos.mjs",
+    "dist:mac": "npm run build:mac && npm run build:dmg",
+    "test:package": "node scripts/package-check.mjs"
   },
   "devDependencies": {
     "@electron/packager": "20.3.0",

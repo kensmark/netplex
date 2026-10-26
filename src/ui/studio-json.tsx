@@ -62,7 +62,7 @@ export function StudioJSON({
           onChange={(event) => setScope(event.target.value)}
         >
           <option value="theme">Tema · kun udseende</option>
-          <option value="layout">Layout · lister og sektioner</option>
+          <option value="layout">Layout · lister og rækkefølge</option>
           <option value="all">Hele opsætningen · sikkerhedskopi</option>
         </select>
       </label>
@@ -70,7 +70,7 @@ export function StudioJSON({
         {scope === 'theme'
           ? 'Farver, skrifttype, filmkort og menuplacering. Ingen lister eller filmregler.'
           : scope === 'layout'
-            ? 'Lister, kategoriregler, sektioner, menuindhold og bibliotekets visning. Ingen farver eller filmkort.'
+            ? 'Lister, kategoriregler, rækkefølge, menuindhold og bibliotekets visning. Ingen farver eller filmkort.'
             : 'Erstatter både layout og udseende. Brug Tema eller Layout for at ændre én del ad gangen.'}
       </p>
       <label className="studio-field">

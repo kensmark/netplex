@@ -1,3 +1,4 @@
+import electronExecutable from 'electron';
 import { _electron } from '../../node_modules/playwright/index.mjs';
 import { readFile, writeFile, mkdtemp, mkdir } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
@@ -62,7 +63,7 @@ let app;
 const errors = [];
 try {
   app = await _electron.launch({
-    executablePath: join(root, 'desktop/node_modules/electron/dist/electron.exe'),
+    executablePath: electronExecutable,
     args: [join(root, 'desktop/main.js')],
     env: { ...process.env, NETPLEX_DATA_DIR: data, NETPLEX_NO_IMPORT: '1' },
     timeout: 30000,
@@ -160,6 +161,16 @@ try {
   await page.getByRole('button', { name: 'Brug temaet Velvet', exact: true }).click();
   await page.getByRole('button', { name: 'JSON', exact: true }).click();
   await page.getByRole('combobox', { name: 'JSON-indhold', exact: true }).selectOption('all');
+  await page.waitForFunction(() => {
+    try {
+      return (
+        JSON.parse(document.querySelector('[aria-label="Design JSON"]')?.value || '{}').format ===
+        'netplex.design'
+      );
+    } catch {
+      return false;
+    }
+  });
   const themed = JSON.parse(
     await page.getByRole('textbox', { name: 'Design JSON', exact: true }).inputValue(),
   );
@@ -167,6 +178,16 @@ try {
   assert.deepEqual(themed.library, design.library);
   assert.equal(themed.theme.accent, '#f3b18e');
   await page.getByRole('combobox', { name: 'JSON-indhold', exact: true }).selectOption('theme');
+  await page.waitForFunction(() => {
+    try {
+      return (
+        JSON.parse(document.querySelector('[aria-label="Tema JSON"]')?.value || '{}').format ===
+        'netplex.theme'
+      );
+    } catch {
+      return false;
+    }
+  });
   const theme = JSON.parse(
     await page.getByRole('textbox', { name: 'Tema JSON', exact: true }).inputValue(),
   );
@@ -196,66 +217,46 @@ try {
   await page.getByRole('button', { name: 'Gem som tema', exact: true }).click();
   await page.getByRole('button', { name: 'Brug temaet Mit Windows-tema', exact: true }).waitFor();
   await page.getByRole('button', { name: 'Layout', exact: true }).click();
+  await page.getByRole('button', { name: '+ Kategori', exact: true }).click();
   await page
-    .getByRole('combobox', { name: 'Tilføj færdig kategori', exact: true })
+    .getByRole('combobox', { name: 'Brug færdig kategori', exact: true })
     .selectOption('classics');
   assert.equal(
     await page.getByRole('textbox', { name: 'Kategoriens navn', exact: true }).inputValue(),
     'Film før 1990',
   );
-  await page.getByRole('button', { name: '+ Sektion', exact: true }).click();
-  await page
-    .getByRole('combobox', { name: 'Sektionens opbygning', exact: true })
-    .selectOption('columns');
-  await page
-    .getByRole('combobox', { name: 'Kolonnernes fordeling', exact: true })
-    .selectOption('wide-left');
-  await page
-    .getByRole('combobox', { name: 'Sektionens indramning', exact: true })
-    .selectOption('panel');
-  await page
-    .getByRole('combobox', { name: 'Tilføj færdig kategori', exact: true })
-    .selectOption('rated');
-  await page
-    .locator('[data-tree-id]')
-    .filter({ has: page.locator('.studio-tree-label', { hasText: 'Side om side' }) })
-    .last()
-    .locator('.studio-tree-label')
-    .click();
-  await page
-    .getByRole('combobox', { name: 'Tilføj færdig kategori', exact: true })
-    .selectOption('short');
+  assert.equal(await page.getByRole('button', { name: '+ Sektion', exact: true }).count(), 0);
+  assert.equal(
+    await page.getByRole('combobox', { name: 'Tilføj færdig kategori', exact: true }).count(),
+    0,
+  );
+  for (const preset of ['rated', 'short']) {
+    await page.getByRole('button', { name: '+ Kategori', exact: true }).click();
+    await page
+      .getByRole('combobox', { name: 'Brug færdig kategori', exact: true })
+      .selectOption(preset);
+  }
   await page.getByRole('button', { name: 'JSON', exact: true }).click();
   await page.getByRole('combobox', { name: 'JSON-indhold', exact: true }).selectOption('all');
+  await page.waitForFunction(() => {
+    try {
+      return (
+        JSON.parse(document.querySelector('[aria-label="Design JSON"]')?.value || '{}').format ===
+        'netplex.design'
+      );
+    } catch {
+      return false;
+    }
+  });
   const result = JSON.parse(
     await page.getByRole('textbox', { name: 'Design JSON', exact: true }).inputValue(),
   );
   assert.ok(result.pages.home.children.some((n) => n.id === 'my-special'));
-  const section = result.pages.home.children.find(
-    (n) => n.type === 'container' && n.ratio === 'wide-left',
-  );
-  assert.equal(section.children.length, 2);
-  assert.equal(section.surface, 'panel');
-  const classic = result.pages.home.children.find((n) => n.title === 'Film før 1990');
-  assert.equal(classic.query.filter.year.lt, 1990);
-  const tracks = await page
-    .locator(`[data-module="${section.id}"]`)
-    .evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').map(parseFloat));
-  assert.ok(
-    Math.abs(tracks[0] / tracks[1] - 2) < 0.02,
-    'Side-by-side columns must use the selected 2:1 ratio',
+  assert.equal(
+    result.pages.home.children.find((n) => n.title === 'Film før 1990').query.filter.year.lt,
+    1990,
   );
   await page.getByRole('button', { name: 'Layout', exact: true }).click();
-  await page.locator(`[data-tree-id="${section.id}"] .studio-tree-label`).click();
-  await page
-    .getByRole('combobox', { name: 'Sektionens opbygning', exact: true })
-    .selectOption('masonry');
-  assert.equal(
-    await page
-      .locator(`[data-module="${section.id}"]`)
-      .evaluate((el) => getComputedStyle(el).columnCount),
-    '2',
-  );
   assert.equal(
     await page
       .getByRole('combobox', { name: 'Bibliotekets visning', exact: true })
@@ -266,7 +267,9 @@ try {
   await page
     .getByRole('combobox', { name: 'Bibliotekets visning', exact: true })
     .selectOption('grid');
-  const homeSize = await page.locator('[data-module=recent] .np-carousel').getAttribute('data-card-size');
+  const homeSize = await page
+    .locator('[data-module=recent] .np-carousel')
+    .getAttribute('data-card-size');
   const homeRadius = await page
     .locator('[data-module=recent] .np-card-root')
     .first()
@@ -276,22 +279,24 @@ try {
       .getByRole('navigation', { name: 'Hovedmenu' })
       .getByRole('button', { name, exact: true })
       .click();
-    const libraryCard = page.locator('.library-main .np-layout-grid .film-card').first();
-    await libraryCard.waitFor();
-    const image = await libraryCard.locator('.np-card-image').boundingBox();
-    assert.ok(Math.abs(image.width / image.height - 16 / 9) < .01, name + ' must share the landscape format');
-    assert.equal(await page.locator('.library-main .np-layout-grid').getAttribute('data-card-size'), homeSize);
-    assert.equal(
-      await libraryCard
-        .locator('.np-card-root')
-        .evaluate((el) => getComputedStyle(el).borderRadius),
-      homeRadius,
-    );
-    assert.equal(
-      await libraryCard
-        .locator('.np-card-info')
-        .evaluate((el) => el.parentElement.matches('.np-card-image')),
-      true,
+    await page.waitForFunction(
+      ({ name, size, radius }) => {
+        if (document.querySelector('.library-heading h1')?.textContent !== name) return false;
+        const image = document.querySelector(
+          '.library-main .np-layout-grid .film-card .np-card-image',
+        );
+        if (!image) return false;
+        const box = image.getBoundingClientRect();
+        return (
+          box.width > 0 &&
+          box.height > 0 &&
+          Math.abs(box.width / box.height - 16 / 9) < 0.01 &&
+          image.closest('[data-card-size]')?.getAttribute('data-card-size') === size &&
+          getComputedStyle(image.closest('.np-card-root')).borderRadius === radius &&
+          image.querySelector('.np-card-info')?.parentElement === image
+        );
+      },
+      { name, size: homeSize, radius: homeRadius },
     );
     assert.equal(await page.locator('.np-card-compact').count(), 0);
   }
@@ -304,18 +309,24 @@ try {
       .getByRole('navigation', { name: 'Hovedmenu' })
       .getByRole('button', { name, exact: true })
       .click();
-    const poster = page.locator('#main-content .np-card-image').first();
-    await poster.waitFor();
-    const geometry = await poster.boundingBox();
-    assert.ok(
-      Math.abs(geometry.width / geometry.height - 2 / 3) < .01,
-      name + ' must share the poster format',
-    );
-    assert.equal(await poster.locator('xpath=ancestor::*[@data-card-size]').getAttribute('data-card-size'),'240');
-    assert.equal(
-      await poster.locator('..').evaluate((el) => getComputedStyle(el).borderRadius),
-      '14px',
-    );
+    await page.waitForFunction((name) => {
+      if (
+        name === 'Forside'
+          ? !document.querySelector('#main-content .hero')
+          : document.querySelector('.library-heading h1')?.textContent !== name
+      )
+        return false;
+      const image = document.querySelector('#main-content .np-card-image');
+      if (!image) return false;
+      const box = image.getBoundingClientRect();
+      return (
+        box.width > 0 &&
+        box.height > 0 &&
+        Math.abs(box.width / box.height - 2 / 3) < 0.01 &&
+        image.closest('[data-card-size]')?.getAttribute('data-card-size') === '240' &&
+        getComputedStyle(image.parentElement).borderRadius === '14px'
+      );
+    }, name);
   }
   await page.getByRole('button', { name: 'Gem design', exact: true }).click();
   await page.getByRole('status').filter({ hasText: 'Designet er gemt' }).waitFor();
@@ -329,7 +340,7 @@ try {
     .waitFor({ state: 'detached' });
   assert.deepEqual(errors, []);
   console.log(
-    'PASS: Windows in-poster metadata, unclipped progress, cast disclosure, poster hit area, identical home/movie/show/saved cards, centered SVG arrows, theme gallery, separate JSON scopes, personal themes, category presets and asymmetric sections.',
+    'PASS: Desktop in-poster metadata, unclipped progress, cast disclosure, poster hit area, identical home/movie/show/saved cards, centered SVG arrows, theme gallery, separate JSON scopes, personal themes, category presets and a flat home layout.',
   );
 } finally {
   await app?.close();

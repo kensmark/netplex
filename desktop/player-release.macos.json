@@ -1,0 +1,16 @@
+{
+  "minimumSystemVersion": "14.0",
+  "publisher": "https://laboratory.stolendata.net/~djinn/mpv_osx/",
+  "arm64": {
+    "version": "0.40.0",
+    "url": "https://laboratory.stolendata.net/~djinn/mpv_osx/mpv-arm64-0.40.0.tar.gz",
+    "sha256": "3170fb709defebaba33e9755297d70dc3562220541de54fc3d494a8309ef1260",
+    "source": "https://github.com/mpv-player/mpv/tree/v0.40.0"
+  },
+  "x64": {
+    "version": "0.39.0",
+    "url": "https://laboratory.stolendata.net/~djinn/mpv_osx/mpv-0.39.0.tar.gz",
+    "sha256": "35ec81ad86a97b24956a8d0f4fa1ba2690b44ae7741c920e923620bcd7bd402a",
+    "source": "https://github.com/mpv-player/mpv/tree/v0.39.0"
+  }
+}

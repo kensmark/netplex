@@ -5,7 +5,7 @@ import {
   applyDesignFile,
   themePackage,
 } from '../design/core';
-import type { Design, ThemePackage, SavedTheme } from '../design/types';
+import type { Design, ThemePackage, SavedTheme, LayoutNode } from '../design/types';
 import premiere from '../../designs/premiere.json';
 import obsidian from '../../designs/obsidian.json';
 import archive from '../../designs/archive.json';
@@ -29,6 +29,18 @@ function normalizeDesign(design: Design): Design {
     if (node.type === 'container') node.children.forEach(visit);
   };
   visit(design.pages.home);
+  // Keep older layouts readable while the section UI is retired. Preserve every
+  // category (and its rules) in document order; only remove the grouping.
+  const flatten = (node: LayoutNode): LayoutNode[] =>
+    node.type === 'container' ? node.children.flatMap(flatten) : [node];
+  const home = design.pages.home;
+  if (home.type === 'container') {
+    home.children = home.children.flatMap(flatten);
+    home.layout = 'stack';
+    delete home.columns;
+    delete home.ratio;
+    delete home.surface;
+  }
   return design;
 }
 type API = (

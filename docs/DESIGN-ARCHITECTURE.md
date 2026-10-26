@@ -1,5 +1,11 @@
 # NetPlex Design 2
 
+## Udgave 1.4.2: enklere modulstyring
+
+Det valgte modul har et skraldespandsikon direkte i modulrækken. Forsidens rod kan ikke slettes. Sletning opdaterer forhåndsvisningen og kan fortrydes/gentages; Gem design og Annullér styrer fortsat, om ændringen bevares. Den tidligere Fjern modulet-knap langt nede i egenskaberne er fjernet.
+
+Den globale Tilføj færdig kategori-vælger er fjernet. Tilføj en kategori med + Kategori, og anvend Brug færdig kategori inde i kategoriens justeringer. Sektioner/Side om side er taget ud af Studio. Klientens normalisering flader ældre indlejrede sektioner ud til almindelige moduler i samme rækkefølge uden at miste kategorier, id'er eller filtre. Den gemte fil overskrives først ved Gem design. Det eksisterende filformat accepteres fortsat af hensyn til gamle designfiler.
+
 ## Udgave 1.4: katalog fra flere servere
 
 `server/catalog.js` ejer serveropdagelse, fravalg, pagineret indlæsning, kildeidentitet, samling af dubletter og kompatibilitet med tidligere lister. Indstillingerne udvides bagudkompatibelt med servers, serverSelections og catalogBookmarks. Tokens og serveradresser opbevares lokalt, adskilt fra designfiler. Kontoens fravalg overlever ny login; en manuel forbindelse opgraderes fra connection.
@@ -85,3 +91,8 @@ Livevisningen holder React-rødderne monteret. Visuelle ændringer opdaterer kun
 GET /api/design/catalog udleder valgmuligheder fra det fuldt paginerede bibliotek og fortsæt-listen. Genrer, instruktører og medvirkende matches med ELLER inden for samme liste og OG mellem de forskellige lister. Rollelisten afkortes ikke til de første otte personer.
 
 Windows-testen køres med npm run test:ui eller npm run test:studio fra desktop-mappen og kontrollerer de faktiske Electron-komponenter, filtre, hover, sideomløb, trækmarkering og stabil livevisning.
+
+
+## macOS-værten
+
+Windows og macOS deler React-motor, designkontrakter og lokal Plex-backend. macOS gemmer brugerfiler i `~/Library/Application Support/NetPlex Desktop`; Windows beholder sit eksisterende datakatalog. Den platformsspecifikke afspiller er uden for designformatet: Windows bruger den indlejrede Win32-videoflade, mens Mac bruger et separat medfølgende mpv-vindue. `desktop/platform.js` vælger spillersti, argumenter og privat IPC. `desktop/native-video.js` indlæser kun Windows-FFI på Windows. Begge Mac-arkitekturer bygges og testes på native GitHub-runners.
