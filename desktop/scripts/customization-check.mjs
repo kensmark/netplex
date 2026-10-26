@@ -1,5 +1,5 @@
 import electronExecutable from 'electron';
-import { _electron } from '../../node_modules/playwright/index.mjs';
+import { _electron, expect } from '../../node_modules/playwright/index.mjs';
 import { readFile, writeFile, mkdtemp, mkdir } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import assert from 'node:assert/strict';
@@ -161,6 +161,16 @@ try {
   await page.getByRole('button', { name: 'Brug temaet Velvet', exact: true }).click();
   await page.getByRole('button', { name: 'JSON', exact: true }).click();
   await page.getByRole('combobox', { name: 'JSON-indhold', exact: true }).selectOption('all');
+  await page.waitForFunction(() => {
+    try {
+      return (
+        JSON.parse(document.querySelector('[aria-label="Design JSON"]')?.value || '{}').format ===
+        'netplex.design'
+      );
+    } catch {
+      return false;
+    }
+  });
   const themed = JSON.parse(
     await page.getByRole('textbox', { name: 'Design JSON', exact: true }).inputValue(),
   );
@@ -168,6 +178,16 @@ try {
   assert.deepEqual(themed.library, design.library);
   assert.equal(themed.theme.accent, '#f3b18e');
   await page.getByRole('combobox', { name: 'JSON-indhold', exact: true }).selectOption('theme');
+  await page.waitForFunction(() => {
+    try {
+      return (
+        JSON.parse(document.querySelector('[aria-label="Tema JSON"]')?.value || '{}').format ===
+        'netplex.theme'
+      );
+    } catch {
+      return false;
+    }
+  });
   const theme = JSON.parse(
     await page.getByRole('textbox', { name: 'Tema JSON', exact: true }).inputValue(),
   );
@@ -218,6 +238,16 @@ try {
   }
   await page.getByRole('button', { name: 'JSON', exact: true }).click();
   await page.getByRole('combobox', { name: 'JSON-indhold', exact: true }).selectOption('all');
+  await page.waitForFunction(() => {
+    try {
+      return (
+        JSON.parse(document.querySelector('[aria-label="Design JSON"]')?.value || '{}').format ===
+        'netplex.design'
+      );
+    } catch {
+      return false;
+    }
+  });
   const result = JSON.parse(
     await page.getByRole('textbox', { name: 'Design JSON', exact: true }).inputValue(),
   );
@@ -260,12 +290,7 @@ try {
       await page.locator('.library-main .np-layout-grid').getAttribute('data-card-size'),
       homeSize,
     );
-    assert.equal(
-      await libraryCard
-        .locator('.np-card-root')
-        .evaluate((el) => getComputedStyle(el).borderRadius),
-      homeRadius,
-    );
+    await expect(libraryCard.locator('.np-card-root')).toHaveCSS('border-radius', homeRadius);
     assert.equal(
       await libraryCard
         .locator('.np-card-info')

@@ -142,6 +142,16 @@ try {
   await page.getByRole('button', { name: 'Medvirkende', exact: true }).click();
   await page.getByRole('button', { name: 'JSON', exact: true }).click();
   await page.getByRole('combobox', { name: 'JSON-indhold', exact: true }).selectOption('all');
+  await page.waitForFunction(() => {
+    try {
+      return (
+        JSON.parse(document.querySelector('[aria-label="Design JSON"]')?.value || '{}').format ===
+        'netplex.design'
+      );
+    } catch {
+      return false;
+    }
+  });
   const design = JSON.parse(
     await page.getByRole('textbox', { name: 'Design JSON', exact: true }).inputValue(),
   );
