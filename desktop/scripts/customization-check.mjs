@@ -279,26 +279,24 @@ try {
       .getByRole('navigation', { name: 'Hovedmenu' })
       .getByRole('button', { name, exact: true })
       .click();
-    const libraryCard = page.locator('.library-main .np-layout-grid .film-card').first();
-    await libraryCard.waitFor();
-    const image = await libraryCard.locator('.np-card-image').boundingBox();
-    assert.ok(
-      Math.abs(image.width / image.height - 16 / 9) < 0.01,
-      name + ' must share the landscape format',
-    );
-    assert.equal(
-      await page.locator('.library-main .np-layout-grid').getAttribute('data-card-size'),
-      homeSize,
-    );
-    await page.waitForFunction(radius => {
-      const card = document.querySelector('.library-main .np-layout-grid .film-card .np-card-root');
-      return card && getComputedStyle(card).borderRadius === radius;
-    }, homeRadius);
-    assert.equal(
-      await libraryCard
-        .locator('.np-card-info')
-        .evaluate((el) => el.parentElement.matches('.np-card-image')),
-      true,
+    await page.waitForFunction(
+      ({ name, size, radius }) => {
+        if (document.querySelector('.library-heading h1')?.textContent !== name) return false;
+        const image = document.querySelector(
+          '.library-main .np-layout-grid .film-card .np-card-image',
+        );
+        if (!image) return false;
+        const box = image.getBoundingClientRect();
+        return (
+          box.width > 0 &&
+          box.height > 0 &&
+          Math.abs(box.width / box.height - 16 / 9) < 0.01 &&
+          image.closest('[data-card-size]')?.getAttribute('data-card-size') === size &&
+          getComputedStyle(image.closest('.np-card-root')).borderRadius === radius &&
+          image.querySelector('.np-card-info')?.parentElement === image
+        );
+      },
+      { name, size: homeSize, radius: homeRadius },
     );
     assert.equal(await page.locator('.np-card-compact').count(), 0);
   }
@@ -311,21 +309,24 @@ try {
       .getByRole('navigation', { name: 'Hovedmenu' })
       .getByRole('button', { name, exact: true })
       .click();
-    const poster = page.locator('#main-content .np-card-image').first();
-    await poster.waitFor();
-    const geometry = await poster.boundingBox();
-    assert.ok(
-      Math.abs(geometry.width / geometry.height - 2 / 3) < 0.01,
-      name + ' must share the poster format',
-    );
-    assert.equal(
-      await poster.locator('xpath=ancestor::*[@data-card-size]').getAttribute('data-card-size'),
-      '240',
-    );
-    assert.equal(
-      await poster.locator('..').evaluate((el) => getComputedStyle(el).borderRadius),
-      '14px',
-    );
+    await page.waitForFunction((name) => {
+      if (
+        name === 'Forside'
+          ? !document.querySelector('#main-content .hero')
+          : document.querySelector('.library-heading h1')?.textContent !== name
+      )
+        return false;
+      const image = document.querySelector('#main-content .np-card-image');
+      if (!image) return false;
+      const box = image.getBoundingClientRect();
+      return (
+        box.width > 0 &&
+        box.height > 0 &&
+        Math.abs(box.width / box.height - 2 / 3) < 0.01 &&
+        image.closest('[data-card-size]')?.getAttribute('data-card-size') === '240' &&
+        getComputedStyle(image.parentElement).borderRadius === '14px'
+      );
+    }, name);
   }
   await page.getByRole('button', { name: 'Gem design', exact: true }).click();
   await page.getByRole('status').filter({ hasText: 'Designet er gemt' }).waitFor();
