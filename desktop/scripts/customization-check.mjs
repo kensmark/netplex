@@ -1,5 +1,5 @@
 import electronExecutable from 'electron';
-import { _electron, expect } from '../../node_modules/playwright/index.mjs';
+import { _electron } from '../../node_modules/playwright/index.mjs';
 import { readFile, writeFile, mkdtemp, mkdir } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import assert from 'node:assert/strict';
@@ -290,7 +290,10 @@ try {
       await page.locator('.library-main .np-layout-grid').getAttribute('data-card-size'),
       homeSize,
     );
-    await expect(libraryCard.locator('.np-card-root')).toHaveCSS('border-radius', homeRadius);
+    await page.waitForFunction(radius => {
+      const card = document.querySelector('.library-main .np-layout-grid .film-card .np-card-root');
+      return card && getComputedStyle(card).borderRadius === radius;
+    }, homeRadius);
     assert.equal(
       await libraryCard
         .locator('.np-card-info')
