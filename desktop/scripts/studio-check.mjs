@@ -210,10 +210,12 @@ try {
         new DragEvent('dragstart', { bubbles: true, dataTransfer: globalThis.__dragData }),
       );
   });
+  await page.locator('[data-tree-id=recent].dragging').waitFor();
   await page.locator('[data-tree-id=continue]').dispatchEvent('dragover', {
     clientY: (await page.locator('[data-tree-id=continue]').boundingBox()).y + 2,
     dataTransfer: await page.evaluateHandle(() => globalThis.__dragData),
   });
+  await page.locator('[data-tree-id=continue].drop-before').waitFor();
   assert.ok(
     (await page.locator('[data-tree-id=continue]').getAttribute('class')).includes('drop-before'),
   );
@@ -223,6 +225,10 @@ try {
   await page.screenshot({ path: join(output, 'netplex-studio-drag-feedback.png') });
   await page.locator('[data-tree-id=continue]').dispatchEvent('drop', {
     dataTransfer: await page.evaluateHandle(() => globalThis.__dragData),
+  });
+  await page.waitForFunction(() => {
+    const ids = [...document.querySelectorAll('.studio-tree-row')].map(element => element.dataset.treeId);
+    return ids.indexOf('recent') < ids.indexOf('continue');
   });
   const order = await page
     .locator('.studio-tree-row')
