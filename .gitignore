@@ -7,6 +7,9 @@ desktop/vendor/
 desktop/.cache/
 desktop/.data/
 Windows/
+Mac/
+/release-assets/
+/desktop/assets/icon.icns
 .DS_Store
 src/design/validate.generated.js
 src/design/validate-v1.generated.js

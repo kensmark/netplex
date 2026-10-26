@@ -1,3 +1,4 @@
+import electronExecutable from 'electron';
 import { _electron } from '../../node_modules/playwright/index.mjs';
 import { readFile, writeFile, mkdtemp, mkdir } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
@@ -62,7 +63,7 @@ let app;
 const errors = [];
 try {
   app = await _electron.launch({
-    executablePath: join(root, 'desktop/node_modules/electron/dist/electron.exe'),
+    executablePath: electronExecutable,
     args: [join(root, 'desktop/main.js')],
     env: { ...process.env, NETPLEX_DATA_DIR: data, NETPLEX_NO_IMPORT: '1' },
     timeout: 30000,
@@ -310,7 +311,7 @@ try {
     .waitFor({ state: 'detached' });
   assert.deepEqual(errors, []);
   console.log(
-    'PASS: Windows in-poster metadata, unclipped progress, cast disclosure, poster hit area, identical home/movie/show/saved cards, centered SVG arrows, theme gallery, separate JSON scopes, personal themes, category presets and a flat home layout.',
+    'PASS: Desktop in-poster metadata, unclipped progress, cast disclosure, poster hit area, identical home/movie/show/saved cards, centered SVG arrows, theme gallery, separate JSON scopes, personal themes, category presets and a flat home layout.',
   );
 } finally {
   await app?.close();

@@ -1,4 +1,4 @@
-// Compatibility entry point: the Studio now targets the Windows application.
+// Compatibility entry point: the Studio now targets the native desktop application.
 import '../desktop/scripts/studio-check.mjs';
 await import('../desktop/scripts/customization-check.mjs');
 await import('../desktop/scripts/multi-server-check.mjs');

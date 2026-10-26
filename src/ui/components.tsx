@@ -16,6 +16,7 @@ export interface UIHost {
   route: Route;
   demo: boolean;
   globalQuery?: string;
+  platform?: string;
 }
 function Icon({ name, host }: { name: string; host: UIHost }) {
   return <span className="np-icon" dangerouslySetInnerHTML={{ __html: host.icon(name) }} />;
@@ -421,7 +422,7 @@ export function Navigation({
             defaultValue={host.globalQuery || ''}
             autoComplete="off"
           />
-          <kbd aria-hidden="true">Ctrl K</kbd>
+          <kbd aria-hidden="true">{host.platform === 'darwin' ? '⌘ K' : 'Ctrl K'}</kbd>
         </form>
         <button
           className="icon-btn np-design-trigger"

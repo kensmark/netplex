@@ -2,7 +2,7 @@
 
 ## Scope
 
-This repository is the Windows x64 desktop application at `https://github.com/kensmark/netplex.git`. The default branch is `main`. Keep the application usable by installing one EXE; end users must not need Node.js, a terminal, or a command file.
+This repository contains the Windows x64 and macOS 14+ (arm64/x64) desktop applications at `https://github.com/kensmark/netplex.git`. The default branch is `main`. Keep Windows installable with one EXE and macOS installable by dragging the app from a DMG; end users must not need Node.js, a terminal, or a command file.
 
 `src/`, `public/` and `server/` are required parts of the desktop app. Electron embeds the interface and starts the local Plex backend. Do not delete or omit them because their names resemble a website. The separate browser launcher `Start NetPlex.cmd` and `server/index.js` may exist on the owner's computer but are intentionally untracked. Preserve them locally and never force-add them. Do not publish a website or enable GitHub Pages.
 
@@ -10,7 +10,7 @@ Read `README.md`, `desktop/README.md` and `docs/DESIGN-ARCHITECTURE.md` before c
 
 ## Run and validate
 
-Use Windows x64 with Node.js 24 LTS (minimum 22.12). From the repository root:
+Use Windows x64 or a native macOS 14+ runner with Node.js 24 LTS (minimum 22.12). From the repository root:
 
 ```powershell
 npm ci
@@ -21,7 +21,7 @@ npm start
 
 `npm run setup:desktop` downloads the pinned mpv build and verifies its SHA-256. Do not replace it with an unverified binary. If Electron's installation hook was disabled, run `node desktop/node_modules/electron/install.js`.
 
-For relevant code changes run `npm run check` and `npm test`. For playback or native-host changes also run `npm run test:desktop`. For interface, Studio or navigation changes run `npm run test:ui`. Windows UI tests launch Electron with isolated profiles and fake Plex servers. Do not test mutations against the owner's real library. Documentation-only changes need link/image checks, not a full player rebuild.
+For relevant code changes run `npm run check` and `npm test`. For playback or native-host changes also run `npm run test:desktop`. For interface, Studio or navigation changes run `npm run test:ui`. UI tests launch Electron with isolated profiles and fake Plex servers. Do not test mutations against the owner's real library. Documentation-only changes need link/image checks, not a full player rebuild.
 
 Use the existing single shared FilmCard for home, Film, Serier and Din liste. Keep layout and theme imports separate, preserve saved user configuration, and keep progress bars from changing card/row height. UI copy is currently Danish.
 
@@ -29,7 +29,7 @@ Use the existing single shared FilmCard for home, Film, Serier and Din liste. Ke
 
 Never commit or upload `.netplex/`, `desktop/.data/`, `%APPDATA%/NetPlex Desktop`, settings, access tokens, server addresses, private identifiers, personal designs, themes or lists. Read a secret only when needed and never print its value. Plex server tokens can appear in `connection.token`, `account.token` and **each `servers[].token`**, including inside older saved configurations.
 
-Do not commit `node_modules/`, `Windows/`, `desktop/vendor/`, `desktop/.cache/`, `test-results/`, local tool downloads, signing keys, generated UI bundles or generated validators. `.gitignore` documents the exclusions. Use only fictional demo content for repository screenshots; do not publish real account names, film libraries or Plex server labels.
+Do not commit `node_modules/`, `Windows/`, `Mac/`, `release-assets/`, `desktop/vendor/`, `desktop/.cache/`, `test-results/`, local tool downloads, signing keys, generated UI bundles or generated validators. `.gitignore` documents the exclusions. Use only fictional demo content for repository screenshots; do not publish real account names, film libraries or Plex server labels.
 
 Before every push inspect staged filenames and run:
 
@@ -54,6 +54,8 @@ GitHub's connector login and local Git credentials are separate. On authenticati
 
 ## Windows releases and installers
 
+Build Mac packages on native Apple Silicon and Intel runners using `npm run build:mac`; the pinned runtime is in `desktop/player-release.macos.json`. Do not introduce Windows DLL imports into the macOS startup path. Mac video uses its own bundled player window and private Unix IPC.
+
 Built installers belong in **GitHub Releases**, never in Git history. Do not rename an old installer to imply a newer build. A release must refer to the commit that produced the application, and its tag/version must agree with root `package.json`, root lockfile, `desktop/package.json`, desktop lockfile and `desktop/preload.cjs`.
 
 ```powershell
@@ -62,6 +64,6 @@ npm run build:windows
 
 This produces `Windows/NetPlex-win32-x64/` and `Windows/Installers/NetPlex-Setup-<version>.exe`. Check that no packaged settings, credentials or test data are included. Verify the application launches, the bundled player is present, and a fresh profile starts at Plex login. Preserve existing login and design files when testing an upgrade. Run installation updates only when authorized and close only the specific NetPlex instance being updated.
 
-Create a draft GitHub release for `v<version>`, attach the EXE, `SHA256.txt` and `LÆS MIG.txt`, verify uploaded sizes/hashes, then publish when the user has authorized publication. Never overwrite an already published installer or tag; use a new version instead. Keep repository visibility unchanged unless the user explicitly requests a visibility change. A private repository requires access for friends to download releases.
+Create a draft GitHub release for `v<version>`, attach the platform installers and matching checksums, verify uploaded sizes/hashes, then publish when the user has authorized publication. Never overwrite an already published installer or tag; use a new version instead. Keep repository visibility unchanged unless the user explicitly requests a visibility change. A private repository requires access for friends to download releases.
 
-Keep release notes in `docs/releases/`. Update README features, download links and demo screenshots when relevant. GitHub displays root `README.md` on the repository landing page; this is documentation for the app, not a separate website. Keep the third-party license notices and pinned source references in `desktop/THIRD-PARTY.md` with distributed builds.
+Keep release notes in `docs/releases/`. Update README features and download links when relevant. Do not add AI-placeholder promotional images or screenshots to the README. GitHub displays root `README.md` on the repository landing page; this is documentation for the app, not a separate website. Keep the third-party license notices and pinned source references in `desktop/THIRD-PARTY.md` with distributed builds.

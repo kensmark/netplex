@@ -1,3 +1,4 @@
+import electronExecutable from 'electron';
 import { _electron } from '../../node_modules/playwright/index.mjs';
 import { readFile, writeFile, mkdtemp, mkdir } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
@@ -33,7 +34,7 @@ let app;
 const errors = [];
 try {
   app = await _electron.launch({
-    executablePath: join(root, 'desktop/node_modules/electron/dist/electron.exe'),
+    executablePath: electronExecutable,
     args: [join(root, 'desktop/main.js')],
     env: { ...process.env, NETPLEX_DATA_DIR: data, NETPLEX_NO_IMPORT: '1' },
     timeout: 30000,
@@ -223,7 +224,7 @@ try {
   await page.screenshot({ path: join(output, 'netplex-1.4.1-carousel.png') });
   assert.deepEqual(errors, []);
   console.log(
-    'PASS: Windows multiple-server settings, source choice, hover gradient, save icon, discrete card sizes filling the full module, and stable rows/arrows/following modules across eight viewport/size combinations and partial pages with progress.',
+    'PASS: Desktop multiple-server settings, source choice, hover gradient, save icon, discrete card sizes filling the full module, and stable rows/arrows/following modules across eight viewport/size combinations and partial pages with progress.',
   );
 } finally {
   await app?.close();

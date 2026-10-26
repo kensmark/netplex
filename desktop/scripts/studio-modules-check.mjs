@@ -1,3 +1,4 @@
+import electronExecutable from 'electron';
 import { _electron } from '../../node_modules/playwright/index.mjs';
 import { readFile, writeFile, mkdtemp, mkdir } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
@@ -47,7 +48,7 @@ await writeFile(
 let app;
 try {
   app = await _electron.launch({
-    executablePath: join(root, 'desktop/node_modules/electron/dist/electron.exe'),
+    executablePath: electronExecutable,
     args: [join(root, 'desktop/main.js')],
     env: { ...process.env, NETPLEX_DATA_DIR: data, NETPLEX_NO_IMPORT: '1' },
     timeout: 30000,
@@ -181,7 +182,7 @@ try {
   );
   assert.deepEqual(errors, []);
   console.log(
-    'PASS: Windows selected-row trash icon, protected home root, live deletion, keyboard action, undo/redo/save/cancel, contextual category presets and legacy section flattening without lost categories.',
+    'PASS: Desktop selected-row trash icon, protected home root, live deletion, keyboard action, undo/redo/save/cancel, contextual category presets and legacy section flattening without lost categories.',
   );
 } finally {
   await app?.close();

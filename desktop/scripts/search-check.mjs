@@ -1,3 +1,4 @@
+import electronExecutable from 'electron';
 import { _electron } from '../../node_modules/playwright/index.mjs';
 import { readFile, writeFile, mkdtemp, mkdir } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
@@ -27,7 +28,7 @@ let app;
 const errors = [];
 try {
   app = await _electron.launch({
-    executablePath: join(root, 'desktop/node_modules/electron/dist/electron.exe'),
+    executablePath: electronExecutable,
     args: [join(root, 'desktop/main.js')],
     env: { ...process.env, NETPLEX_DATA_DIR: data, NETPLEX_NO_IMPORT: '1' },
     timeout: 30000,
@@ -109,13 +110,15 @@ try {
   await page.locator('.hero h1').waitFor();
   // Sidebar themes expose the same usable input and restore correctly on reload.
   await page.getByRole('button', { name: 'Tilpas design', exact: true }).click();
-  await page.setViewportSize({width:1250,height:1000});
-  const headerFits=await page.locator('.site-header').evaluate(header=>{
-    const bounds=header.getBoundingClientRect();
-    return [...header.querySelectorAll('.header-tools > *, nav button')].every(child=>child.getBoundingClientRect().right<=bounds.right-10);
+  await page.setViewportSize({ width: 1250, height: 1000 });
+  const headerFits = await page.locator('.site-header').evaluate((header) => {
+    const bounds = header.getBoundingClientRect();
+    return [...header.querySelectorAll('.header-tools > *, nav button')].every(
+      (child) => child.getBoundingClientRect().right <= bounds.right - 10,
+    );
   });
-  assert.equal(headerFits,true,'Search must leave room for menu controls while Studio is open');
-  await page.screenshot({path:join(output,'netplex-1.4.1-studio-search.png')});
+  assert.equal(headerFits, true, 'Search must leave room for menu controls while Studio is open');
+  await page.screenshot({ path: join(output, 'netplex-1.4.1-studio-search.png') });
   await page.getByRole('button', { name: 'Tilpas', exact: true }).click();
   await page.getByLabel('Navigation', { exact: true }).selectOption('left');
   await page.getByRole('button', { name: 'Gem design', exact: true }).click();
@@ -131,7 +134,7 @@ try {
   assert.equal(await search.inputValue(), 'Night');
   assert.deepEqual(errors, []);
   console.log(
-    'PASS: Windows real header search, focus without navigation, keyboard shortcut, live cross-library results, Enter, Back, clearing, reload, sidebar navigation and single-outline local film/show search.',
+    'PASS: Desktop real header search, focus without navigation, keyboard shortcut, live cross-library results, Enter, Back, clearing, reload, sidebar navigation and single-outline local film/show search.',
   );
 } finally {
   await app?.close();

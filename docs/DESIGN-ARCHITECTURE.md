@@ -91,3 +91,8 @@ Livevisningen holder React-rødderne monteret. Visuelle ændringer opdaterer kun
 GET /api/design/catalog udleder valgmuligheder fra det fuldt paginerede bibliotek og fortsæt-listen. Genrer, instruktører og medvirkende matches med ELLER inden for samme liste og OG mellem de forskellige lister. Rollelisten afkortes ikke til de første otte personer.
 
 Windows-testen køres med npm run test:ui eller npm run test:studio fra desktop-mappen og kontrollerer de faktiske Electron-komponenter, filtre, hover, sideomløb, trækmarkering og stabil livevisning.
+
+
+## macOS-værten
+
+Windows og macOS deler React-motor, designkontrakter og lokal Plex-backend. macOS gemmer brugerfiler i `~/Library/Application Support/NetPlex Desktop`; Windows beholder sit eksisterende datakatalog. Den platformsspecifikke afspiller er uden for designformatet: Windows bruger den indlejrede Win32-videoflade, mens Mac bruger et separat medfølgende mpv-vindue. `desktop/platform.js` vælger spillersti, argumenter og privat IPC. `desktop/native-video.js` indlæser kun Windows-FFI på Windows. Begge Mac-arkitekturer bygges og testes på native GitHub-runners.
