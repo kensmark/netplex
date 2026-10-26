@@ -34,4 +34,8 @@ await writeFile(
   join(output, `build-info-${process.platform}-${process.arch}.json`),
   JSON.stringify(manifest, null, 2) + '\n',
 );
+if (process.platform === 'win32') {
+  for (const name of ['SHA256.txt', 'LÆS MIG.txt'])
+    await copyFile(join(directory, name), join(output, name));
+}
 console.log('Collected verified installer metadata for ' + process.platform + '/' + process.arch);

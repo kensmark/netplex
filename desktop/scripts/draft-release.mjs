@@ -39,6 +39,14 @@ const sums = Buffer.from(
     .map((asset) => `${asset.sha256}  ${asset.name}\n`)
     .join(''),
 );
+const windows = assets.find(asset => asset.name.endsWith('.exe'));
+const windowsSums = await readFile(join(directory, 'SHA256.txt'));
+if (windowsSums.toString().trim() !== `${windows.sha256}  ${windows.name}`)
+  throw new Error('Windows checksum does not match its installer.');
+const instructions = Buffer.from(await readFile(join(directory, 'LÆS MIG.txt'), 'utf8') +
+  '\nmacOS 14 eller nyere: Vælg arm64 til Apple Silicon (M1 eller nyere) eller x64 til Intel. Åbn DMG-filen, og træk NetPlex til Applications. Mac-udgaven er en ad-hoc-signeret forhåndsvisning, ikke notariseret af Apple. Efter en blokeret første start kan du vælge Systemindstillinger > Anonymitet & sikkerhed > Åbn alligevel for en download, du stoler på. Afspilning åbner i sit eget NetPlex Player-vindue.\n');
+for (const [name, bytes] of [['SHA256.txt', windowsSums], ['LÆS MIG.txt', instructions]])
+  assets.push({name, bytes, size:bytes.length, sha256:createHash('sha256').update(bytes).digest('hex')});
 await writeFile(join(directory, 'SHA256SUMS.txt'), sums);
 assets.push({
   name: 'SHA256SUMS.txt',
